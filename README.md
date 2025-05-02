@@ -1,46 +1,60 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 推し活うちわジェネレーター
 
-## Available Scripts
+好きなテキストや図形を自由に配置して、オリジナルの応援うちわ画像を作成できるWebアプリです。
 
-In the project directory, you can run:
+![OGP画像](./public/ogp-image.png)
 
-### `npm start`
+## 主な機能
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- テキストやフォント、色、サイズ、回転の自由なカスタマイズ
+- ハート・星・音符・キラキラ・丸などのデコパーツ追加
+- 背景の塗りつぶしモード（全塗り・うちわ型・角丸背景・塗りなし）
+- 角丸背景は四隅が透過されるPNGでダウンロード可能
+- 作成したうちわ画像をPNG形式でダウンロード
+- 共有用URLの発行
+- GitHubリポジトリへのリンクをフッターに表示
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## 使い方
 
-### `npm test`
+1. 画面左側でテキストやデコパーツ、背景などを自由に設定します。
+2. プレビューを見ながら調整します。
+3. 「ダウンロード」ボタンで透過PNG画像として保存できます。
+4. 「共有用URLコピー」で現在のデザインを他の人と共有できます。
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 開発・ビルド
 
-### `npm run build`
+このプロジェクトは [Create React App](https://github.com/facebook/create-react-app) で作成されています。
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 開発サーバー起動
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+npm install
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 本番ビルド
 
-### `npm run eject`
+```
+npm run build
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## GitHubリポジトリ
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+https://github.com/esuji5/uchiwa_generator
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## デプロイ方法
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+このプロジェクトは `gh-pages` を使ってGitHub Pagesにデプロイできます。
 
-## Learn More
+```
+npm run deploy
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+初回や依存パッケージが未インストールの場合は、事前に `npm install` を実行してください。
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 公開URL
+
+アプリは以下のURLで公開されています：
+
+[https://esuji5.github.io/uchiwa_generator](https://esuji5.github.io/uchiwa_generator)
