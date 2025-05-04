@@ -4,12 +4,12 @@ import { DecoItem, TextItem } from '../types';
 import DecoShape from './DecoShape';
 
 interface UchiwaPreviewProps {
-  // 従来の単一テキスト用のprops
-  text: string;
-  textColor: string;
+  // 従来の単一テキスト用のprops (オプショナルに変更)
+  text?: string;
+  textColor?: string;
   bgColor: string;
-  font: string;
-  fontSize: number;
+  font?: string;
+  fontSize?: number;
   fillMode: string;
   
   // 複数テキスト用のprops
@@ -24,14 +24,18 @@ interface UchiwaPreviewProps {
   setDecos: React.Dispatch<React.SetStateAction<DecoItem[]>>;
   handleDownload: () => void;
   copyShareableUrl: () => void;
+  copyParametersOnly?: () => void; // パラメータのみをコピーする関数
+  downloadMethod: 'legacy' | 'domtoimage';
+  setDownloadMethod: (method: 'legacy' | 'domtoimage') => void;
+  resetAllSettings: () => void; // 全ての設定をリセットする関数
 }
 
 export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
-  text,
-  textColor,
+  text = '', // デフォルト値を設定
+  textColor = '#ffffff', // デフォルト値を設定
   bgColor,
-  font,
-  fontSize,
+  font = '"M PLUS Rounded 1c", sans-serif', // デフォルト値を設定
+  fontSize = 100, // デフォルト値を設定
   fillMode,
   textItems,
   handleTextDragStart,
@@ -41,7 +45,11 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
   handleDecoMouseDown,
   setDecos,
   handleDownload,
-  copyShareableUrl
+  copyShareableUrl,
+  copyParametersOnly,
+  downloadMethod,
+  setDownloadMethod,
+  resetAllSettings
 }) => {
   return (
     <div className="preview-container">
@@ -52,8 +60,11 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
           ref={svgRef}
           width="360" 
           height="360" 
-          viewBox="0 0 360 360" 
-          style={{ background: fillMode === 'all' ? bgColor : 'transparent' }}
+          viewBox="0 0 360 360"
+          style={{ 
+            background: fillMode === 'all' ? bgColor : 'transparent',
+            '--main-font': 'inherit'
+          } as React.CSSProperties}
         >
           {/* 角丸背景の塗りつぶしモードのとき */}
           {fillMode === 'rounded' && (
@@ -124,7 +135,10 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
                       strokeWidth={Math.max(16, item.fontSize/3.5)}
                       paintOrder="stroke"
                       fill="none"
-                      style={{ dominantBaseline: 'middle' }}
+                      style={{ 
+                        dominantBaseline: 'middle',
+                        fontFamily: item.font
+                      }}
                     >
                       {line}
                     </text>
@@ -140,7 +154,10 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
                       strokeWidth={Math.max(10, item.fontSize/6)}
                       paintOrder="stroke"
                       fill="none"
-                      style={{ dominantBaseline: 'middle' }}
+                      style={{ 
+                        dominantBaseline: 'middle',
+                        fontFamily: item.font
+                      }}
                     >
                       {line}
                     </text>
@@ -153,7 +170,10 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
                       fontSize={item.fontSize}
                       fontWeight="bold"
                       fill={item.color}
-                      style={{ dominantBaseline: 'middle' }}
+                      style={{ 
+                        dominantBaseline: 'middle',
+                        fontFamily: item.font
+                      }}
                     >
                       {line}
                     </text>
@@ -167,6 +187,7 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
                     fill="rgba(255,0,0,0.5)"
                     stroke="#fff"
                     strokeWidth={1}
+                    style={{ display: isDownloading ? 'none' : 'block' }}
                   />
                 )}
               </g>
@@ -187,7 +208,10 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
                   strokeWidth={Math.max(16, fontSize/3.5)}
                   paintOrder="stroke"
                   fill="none"
-                  style={{ dominantBaseline: 'middle' }}
+                  style={{ 
+                    dominantBaseline: 'middle',
+                    fontFamily: font
+                  }}
                 >
                   {line}
                 </text>
@@ -203,7 +227,10 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
                   strokeWidth={Math.max(10, fontSize/6)}
                   paintOrder="stroke"
                   fill="none"
-                  style={{ dominantBaseline: 'middle' }}
+                  style={{ 
+                    dominantBaseline: 'middle',
+                    fontFamily: font
+                  }}
                 >
                   {line}
                 </text>
@@ -216,7 +243,10 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
                   fontSize={fontSize}
                   fontWeight="bold"
                   fill={textColor}
-                  style={{ dominantBaseline: 'middle' }}
+                  style={{ 
+                    dominantBaseline: 'middle',
+                    fontFamily: font
+                  }}
                 >
                   {line}
                 </text>
@@ -238,7 +268,8 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
               {/* 削除ボタン（図形の右上に小さく表示） */}
               {!isDownloading && (
                 <g
-                  style={{ cursor: 'pointer' }}
+                  className="deco-delete-button"
+                  style={{ cursor: 'pointer', display: isDownloading ? 'none' : 'block' }}
                   onClick={() => setDecos(decos.filter(d => d.id !== deco.id))}
                 >
                   <circle cx={deco.x + deco.size/2 - 8} cy={deco.y - deco.size/2 + 8} r="10" fill="#fff" stroke="#888" strokeWidth="1" />
@@ -257,27 +288,101 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
         </svg>
       </div>
       <div className="preview-actions">
-        <button 
-          onClick={handleDownload} 
-          className="download-button"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-            <polyline points="7 10 12 15 17 10"></polyline>
-            <line x1="12" y1="15" x2="12" y2="3"></line>
-          </svg>
-          {isDownloading ? '保存中...' : '画像をダウンロード'}
-        </button>
-        <button
-          onClick={copyShareableUrl}
-          className="share-button"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-          </svg>
-          共有リンクをコピー
-        </button>
+        <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+          <label style={{ 
+            display: 'inline-flex', 
+            alignItems: 'center', 
+            cursor: 'pointer',
+            background: downloadMethod === 'domtoimage' ? '#f0f8ff' : 'transparent',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            border: downloadMethod === 'domtoimage' ? '1px solid #007bff' : '1px solid transparent'
+          }}>
+            <input
+              type="radio"
+              name="downloadMethod"
+              value="domtoimage"
+              checked={downloadMethod === 'domtoimage'}
+              onChange={() => setDownloadMethod('domtoimage')}
+              style={{ 
+                marginRight: '5px',
+                accentColor: '#007bff',
+                width: '16px',
+                height: '16px',
+                visibility: 'visible',
+                opacity: 1
+              }}
+            />
+            新しい方法
+          </label>
+          <label style={{ 
+            display: 'inline-flex', 
+            alignItems: 'center', 
+            cursor: 'pointer',
+            background: downloadMethod === 'legacy' ? '#f0f8ff' : 'transparent',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            border: downloadMethod === 'legacy' ? '1px solid #007bff' : '1px solid transparent'
+          }}>
+            <input
+              type="radio"
+              name="downloadMethod"
+              value="legacy"
+              checked={downloadMethod === 'legacy'}
+              onChange={() => setDownloadMethod('legacy')}
+              style={{ 
+                marginRight: '5px',
+                accentColor: '#007bff',
+                width: '16px',
+                height: '16px',
+                visibility: 'visible',
+                opacity: 1
+              }}
+            />
+            従来の方法
+          </label>
+        </div>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
+          <button 
+            onClick={handleDownload}
+            className="download-button"
+            style={{ width: '100%', maxWidth: '250px' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            {isDownloading ? '保存中...' : '画像をダウンロード'}
+          </button>
+          <button
+            onClick={copyShareableUrl}
+            className="share-button"
+            style={{ width: '100%', maxWidth: '250px' }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+            共有リンクをコピー
+          </button>
+          
+          {/* パラメータのみコピーボタンを表示 */}
+          {copyParametersOnly && (
+            <button
+              onClick={copyParametersOnly}
+              className="params-button"
+              style={{ width: '100%', maxWidth: '250px' }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              ?付きパラメータをコピー
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

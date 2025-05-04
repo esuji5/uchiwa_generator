@@ -7,33 +7,51 @@ import DecorationControls from './components/DecorationControls';
 
 function App() {
   const {
-    // 従来の単一テキスト用の状態と関数
-    text, setText,
-    textColor, setTextColor,
+    // 単一テキスト用の状態と関数を削除
+    // text, setText,
+    // textColor, setTextColor,
+    // font, setFont,
+    // fontSize, setFontSize,
+    
+    // 維持する状態と関数
     bgColor, setBgColor,
-    font, setFont,
-    fontSize, setFontSize,
     fillMode, setFillMode,
-    // 複数テキスト用の状態と関数
     textItems,
     addTextItem, updateTextItem, removeTextItem,
     handleTextDragStart,
-    // その他の状態と関数
     decos, setDecos,
     selectedHeartSize, setSelectedHeartSize,
     isDownloading,
     svgRef,
-    handleDownload,
+    handleDownload, // 簡略化された handleDownload
+    downloadMethod, setDownloadMethod, // downloadMethod は UI 次第で削除検討
     addDeco,
     handleDecoMouseDown,
     clearDecos,
     addRandomDecos,
     addRandomDecosByShape,
-    copyShareableUrl
+    copyShareableUrl,
+    copyParametersOnly,
+    resetAllSettings
   } = useUchiwaState();
 
+  // フォントの読み込み確認 (変更なし)
+  React.useEffect(() => {
+    if (document.fonts && document.fonts.load) {
+      // フォントの読み込みを試行
+      Promise.all([
+        document.fonts.load('400 16px "M PLUS Rounded 1c"'),
+        document.fonts.load('700 16px "M PLUS Rounded 1c"')
+      ]).then(() => {
+        console.log('M PLUS Rounded 1c フォントが読み込まれました');
+      }).catch(err => {
+        console.warn('フォント読み込みエラー:', err);
+      });
+    }
+  }, []);
+  
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ fontFamily: '"M PLUS Rounded 1c", sans-serif' }}>
       <div className="container">
         <div className="header">
           <h1 className="title">推し活うちわジェネレーター</h1>
@@ -43,22 +61,27 @@ function App() {
         <div className="main-content">
           <div className="controls-container">
             <TextSettings 
-              text={text}
-              setText={setText}
-              textColor={textColor}
-              setTextColor={setTextColor}
+              // 単一テキスト props を削除
+              // text={text}
+              // setText={setText}
+              // textColor={textColor}
+              // setTextColor={setTextColor}
+              // font={font}
+              // setFont={setFont}
+              // fontSize={fontSize}
+              // setFontSize={setFontSize}
+              
+              // 維持する props
               bgColor={bgColor}
               setBgColor={setBgColor}
-              font={font}
-              setFont={setFont}
-              fontSize={fontSize}
-              setFontSize={setFontSize}
               fillMode={fillMode}
               setFillMode={setFillMode}
               textItems={textItems}
               updateTextItem={updateTextItem}
               addTextItem={addTextItem}
               removeTextItem={removeTextItem}
+              downloadMethod={downloadMethod} // UI 次第で削除検討
+              setDownloadMethod={setDownloadMethod} // UI 次第で削除検討
             />
             
             <div style={{ marginTop: '15px' }}>
@@ -74,11 +97,14 @@ function App() {
           </div>
           
           <UchiwaPreview
-            text={text}
-            textColor={textColor}
+            // 単一テキスト props を削除
+            // text={text}
+            // textColor={textColor}
+            // font={font}
+            // fontSize={fontSize}
+            
+            // 維持する props
             bgColor={bgColor}
-            font={font}
-            fontSize={fontSize}
             fillMode={fillMode}
             textItems={textItems}
             handleTextDragStart={handleTextDragStart}
@@ -89,6 +115,10 @@ function App() {
             setDecos={setDecos}
             handleDownload={handleDownload}
             copyShareableUrl={copyShareableUrl}
+            copyParametersOnly={copyParametersOnly}
+            downloadMethod={downloadMethod} // UI 次第で削除検討
+            setDownloadMethod={setDownloadMethod} // UI 次第で削除検討
+            resetAllSettings={resetAllSettings} // resetAllSettings は維持
           />
         </div>
         

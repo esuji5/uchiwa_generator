@@ -7,6 +7,8 @@ export type HeartItem = {
   rotate?: number;
 };
 
+export type ShapeType = 'heart' | 'star' | 'note' | 'sparkle' | 'circle';
+
 export type DecoItem = {
   x: number;
   y: number;
@@ -14,7 +16,7 @@ export type DecoItem = {
   size: number;
   id: string;
   rotate?: number;
-  shape: 'heart' | 'star' | 'note' | 'sparkle' | 'circle';
+  shape: ShapeType;
 };
 
 export type TextItem = {
@@ -27,3 +29,5 @@ export type TextItem = {
   font: string;
   rotate: number; // 回転角度（度数法）
 };
+
+export type DownloadMethod = 'legacy' | 'domtoimage';

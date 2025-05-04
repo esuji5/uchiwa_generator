@@ -1,16 +1,6 @@
-// filepath: /Users/esuji/medi/uchiwa_generator/uchiwa-frontend/src/constants.ts
 export const fonts = [
   { label: 'M PLUS 丸ゴシック', value: '"M PLUS Rounded 1c", sans-serif' },
-  { label: 'ヒラギノ丸ゴシック', value: 'Hiragino Maru Gothic ProN, Hiragino Maru Gothic, sans-serif' },
-  { label: '手書き風', value: '"Kosugi Maru", sans-serif' },
-  { label: 'ロックンロール', value: '"RocknRoll One", sans-serif' },
-  { label: 'よもぎ', value: '"Yomogi", sans-serif' },
-  { label: 'Noto Sans', value: 'Noto Sans JP, sans-serif' },
-  { label: 'ゴシック', value: 'YuGothic, "Yu Gothic", sans-serif' },
-  { label: '楷正オプティ', value: '"Kaisei Opti", serif' },
-  { label: 'メイリオ', value: 'Meiryo, sans-serif' },
-  { label: 'Arial', value: 'Arial, sans-serif' },
-  { label: 'Impact', value: 'Impact, Charcoal, sans-serif' },
+  { label: 'ヒラギノ丸ゴシック', value: '"ヒラギノ丸ゴ Pro W4", "ヒラギノ丸ゴ Pro", "Hiragino Maru Gothic Pro", sans-serif' },
 ];
 
 export const heartShapes = [

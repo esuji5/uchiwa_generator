@@ -1,74 +1,56 @@
 import React from 'react';
 import { fonts, fillModes } from '../constants';
-import { TextItem } from '../types';
+import { TextItem, DownloadMethod } from '../types';
 
 interface TextSettingsProps {
-  // 従来の単一テキスト用の props（後方互換性のため残す）
-  text: string;
-  setText: (text: string) => void;
-  textColor: string;
-  setTextColor: (color: string) => void;
+  // 単一テキスト用の props を削除
+  // text: string;
+  // setText: (text: string) => void;
+  // textColor: string;
+  // setTextColor: (color: string) => void;
+  // font: string;
+  // setFont: (font: string) => void;
+  // fontSize: number;
+  // setFontSize: (size: number) => void;
+
+  // 維持する props
   bgColor: string; 
   setBgColor: (color: string) => void;
-  font: string;
-  setFont: (font: string) => void;
-  fontSize: number;
-  setFontSize: (size: number) => void;
   fillMode: string;
   setFillMode: (mode: string) => void;
-  
-  // 複数テキスト用の props
   textItems: TextItem[];
   updateTextItem: (id: string, updates: Partial<TextItem>) => void;
   addTextItem: () => void;
   removeTextItem: (id: string) => void;
+  downloadMethod: DownloadMethod;
+  setDownloadMethod: (method: DownloadMethod) => void;
 }
 
 export const TextSettings: React.FC<TextSettingsProps> = ({
-  // 従来の単一テキスト用の props
-  text,
-  setText,
-  textColor,
-  setTextColor,
+  // 単一テキスト用の props を削除
+  // text,
+  // setText,
+  // textColor,
+  // setTextColor,
+  // font,
+  // setFont,
+  // fontSize,
+  // setFontSize,
+
+  // 維持する props
   bgColor,
   setBgColor,
-  font,
-  setFont,
-  fontSize,
-  setFontSize,
   fillMode,
   setFillMode,
-  
-  // 複数テキスト用の props
   textItems,
   updateTextItem,
   addTextItem,
-  removeTextItem
+  removeTextItem,
+  downloadMethod,
+  setDownloadMethod
 }) => {
-  // 常に複数テキストモードを使用する
-  // 初期表示時に、単一テキストの設定を複数テキストの最初のアイテムに反映する
-  React.useEffect(() => {
-    if (textItems.length === 1) {
-      // 最初の項目を現在の単一テキストの値で更新
-      updateTextItem(textItems[0].id, {
-        text,
-        color: textColor,
-        font,
-        fontSize
-      });
-      // localStorageへ即時反映
-      setTimeout(() => {
-        if (typeof window !== 'undefined') {
-          const updated = textItems.map(item =>
-            item.id === textItems[0].id
-              ? { ...item, text, color: textColor, font, fontSize }
-              : item
-          );
-          localStorage.setItem('uchiwa_text_items', JSON.stringify(updated));
-        }
-      }, 0);
-    }
-  }, [textItems, text, textColor, font, fontSize, updateTextItem]);
+  // 単一テキストとの同期用 useEffect を削除
+  // React.useEffect(() => { ... }, [...]);
 
   // 背景設定部分
   const BackgroundSettings = () => (
@@ -274,6 +256,41 @@ export const TextSettings: React.FC<TextSettingsProps> = ({
               テキスト追加（{textItems.length}/5）
             </button>
           )}
+          
+          {/* ダウンロード設定 */}
+          <div className="setting-section" style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '15px' }}>
+            <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>ダウンロード設定</h3>
+            <div className="download-method-selector">
+              <div className="label" style={{ marginBottom: '5px' }}>ダウンロード方法:</div>
+              <div className="radio-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                  <input 
+                    type="radio" 
+                    name="downloadMethod" 
+                    value="domtoimage" 
+                    checked={downloadMethod === 'domtoimage'} 
+                    onChange={() => setDownloadMethod('domtoimage')} 
+                  />
+                  dom-to-image-more (推奨)
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                  <input 
+                    type="radio" 
+                    name="downloadMethod" 
+                    value="legacy" 
+                    checked={downloadMethod === 'legacy'} 
+                    onChange={() => setDownloadMethod('legacy')} 
+                  />
+                  従来の方法
+                </label>
+              </div>
+              <div className="description" style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
+                {downloadMethod === 'domtoimage' 
+                  ? 'dom-to-image-more: フォント・図形表示に優れたモダンな方法です。'
+                  : '従来の方法: 互換性優先の方法です。問題がある場合はこちらをお試しください。'}
+              </div>
+            </div>
+          </div>
         </div>
     </div>
   );
