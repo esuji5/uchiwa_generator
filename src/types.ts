@@ -30,4 +30,4 @@ export type TextItem = {
   rotate: number; // 回転角度（度数法）
 };
 
-export type DownloadMethod = 'legacy' | 'domtoimage';
+export type DownloadMethod = 'domtoimage';

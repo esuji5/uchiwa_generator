@@ -148,7 +148,9 @@ export const useUchiwaState = () => {
   });
   const [selectedHeartSize, setSelectedHeartSize] = useState<number>(48);
   const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadMethod, setDownloadMethod] = useState<DownloadMethod>('domtoimage');
+  // downloadMethodはdomtoimage固定
+  const downloadMethod: DownloadMethod = 'domtoimage';
+  const setDownloadMethod = () => {}; // 互換性のために空関数を保持
   const svgRef = useRef<SVGSVGElement>(null);
   const dragDecoIndex = useRef<number | null>(null);
   const decoOffset = useRef<{ x: number; y: number }>({ x: 0, y: 0 });

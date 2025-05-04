@@ -25,8 +25,8 @@ interface UchiwaPreviewProps {
   handleDownload: () => void;
   copyShareableUrl: () => void;
   copyParametersOnly?: () => void; // パラメータのみをコピーする関数
-  downloadMethod: 'legacy' | 'domtoimage';
-  setDownloadMethod: (method: 'legacy' | 'domtoimage') => void;
+  downloadMethod: 'domtoimage';
+  setDownloadMethod: (method: 'domtoimage') => void;
   resetAllSettings: () => void; // 全ての設定をリセットする関数
 }
 
@@ -279,61 +279,6 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
         </svg>
       </div>
       <div className="preview-actions">
-        <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-          <label style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            cursor: 'pointer',
-            background: downloadMethod === 'domtoimage' ? '#f0f8ff' : 'transparent',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            border: downloadMethod === 'domtoimage' ? '1px solid #007bff' : '1px solid transparent'
-          }}>
-            <input
-              type="radio"
-              name="downloadMethod"
-              value="domtoimage"
-              checked={downloadMethod === 'domtoimage'}
-              onChange={() => setDownloadMethod('domtoimage')}
-              style={{ 
-                marginRight: '5px',
-                accentColor: '#007bff',
-                width: '16px',
-                height: '16px',
-                visibility: 'visible',
-                opacity: 1
-              }}
-            />
-            新しい方法
-          </label>
-          <label style={{ 
-            display: 'inline-flex', 
-            alignItems: 'center', 
-            cursor: 'pointer',
-            background: downloadMethod === 'legacy' ? '#f0f8ff' : 'transparent',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            border: downloadMethod === 'legacy' ? '1px solid #007bff' : '1px solid transparent'
-          }}>
-            <input
-              type="radio"
-              name="downloadMethod"
-              value="legacy"
-              checked={downloadMethod === 'legacy'}
-              onChange={() => setDownloadMethod('legacy')}
-              style={{ 
-                marginRight: '5px',
-                accentColor: '#007bff',
-                width: '16px',
-                height: '16px',
-                visibility: 'visible',
-                opacity: 1
-              }}
-            />
-            従来の方法
-          </label>
-        </div>
-        
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
           <button 
             onClick={handleDownload}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { fonts, fillModes } from '../constants';
-import { TextItem, DownloadMethod } from '../types';
+import { TextItem } from '../types';
 
 interface TextSettingsProps {
   // 単一テキスト用の props を削除
@@ -22,8 +22,8 @@ interface TextSettingsProps {
   updateTextItem: (id: string, updates: Partial<TextItem>) => void;
   addTextItem: () => void;
   removeTextItem: (id: string) => void;
-  downloadMethod: DownloadMethod;
-  setDownloadMethod: (method: DownloadMethod) => void;
+  downloadMethod: 'domtoimage';
+  setDownloadMethod: (method: 'domtoimage') => void;
 }
 
 export const TextSettings: React.FC<TextSettingsProps> = ({
@@ -258,39 +258,7 @@ export const TextSettings: React.FC<TextSettingsProps> = ({
           )}
           
           {/* ダウンロード設定 */}
-          <div className="setting-section" style={{ marginTop: '20px', borderTop: '1px solid #eee', paddingTop: '15px' }}>
-            <h3 style={{ fontSize: '16px', marginBottom: '8px' }}>ダウンロード設定</h3>
-            <div className="download-method-selector">
-              <div className="label" style={{ marginBottom: '5px' }}>ダウンロード方法:</div>
-              <div className="radio-group" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-                  <input 
-                    type="radio" 
-                    name="downloadMethod" 
-                    value="domtoimage" 
-                    checked={downloadMethod === 'domtoimage'} 
-                    onChange={() => setDownloadMethod('domtoimage')} 
-                  />
-                  dom-to-image-more (推奨)
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
-                  <input 
-                    type="radio" 
-                    name="downloadMethod" 
-                    value="legacy" 
-                    checked={downloadMethod === 'legacy'} 
-                    onChange={() => setDownloadMethod('legacy')} 
-                  />
-                  従来の方法
-                </label>
-              </div>
-              <div className="description" style={{ fontSize: '12px', color: '#666', marginTop: '5px' }}>
-                {downloadMethod === 'domtoimage' 
-                  ? 'dom-to-image-more: フォント・図形表示に優れたモダンな方法です。'
-                  : '従来の方法: 互換性優先の方法です。問題がある場合はこちらをお試しください。'}
-              </div>
-            </div>
-          </div>
+          {/* ダウンロード設定セクションは削除 */}
         </div>
     </div>
   );
