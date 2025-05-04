@@ -382,6 +382,92 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
           </button>
         </div>
       </div>
+      
+      {/* サンプル画像セクション */}
+      <div className="sample-images-section" style={{ 
+        marginTop: '20px', 
+        padding: '15px',
+        borderTop: '1px solid #eee'
+      }}>
+        <h3 style={{ 
+          fontSize: '16px', 
+          textAlign: 'center', 
+          marginBottom: '15px' 
+        }}>サンプルテンプレート</h3>
+        
+        <div style={{ 
+          display: 'flex', 
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: '15px'
+        }}>
+          {/* ピースしてサンプル */}
+          <div className="sample-item" style={{ 
+            textAlign: 'center',
+            width: '100px',
+            cursor: 'pointer' 
+          }}>
+            <a href="?state=%7B%22t%22%3A%5B%7B%22text%22%3A%22%E3%83%94%E2%88%92%E3%82%B9%22%2C%22x%22%3A179%2C%22y%22%3A157%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A125%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A0%7D%2C%7B%22text%22%3A%22%E3%81%97%E3%81%A6%22%2C%22x%22%3A145%2C%22y%22%3A264%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A83%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A1%7D%2C%7B%22text%22%3A%22%F0%9F%98%8E%22%2C%22x%22%3A283%2C%22y%22%3A282%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A114%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A0%7D%5D%2C%22d%22%3A%5B%7B%22x%22%3A190%2C%22y%22%3A62%2C%22c%22%3A%22%23FF4081%22%2C%22s%22%3A120%2C%22r%22%3A15%2C%22t%22%3A%22heart%22%7D%2C%7B%22x%22%3A143%2C%22y%22%3A330%2C%22c%22%3A%22%23FF4081%22%2C%22s%22%3A80%2C%22r%22%3A-15%2C%22t%22%3A%22heart%22%7D%2C%7B%22x%22%3A29%2C%22y%22%3A238%2C%22c%22%3A%22%23FF4081%22%2C%22s%22%3A48%2C%22r%22%3A-15%2C%22t%22%3A%22heart%22%7D%2C%7B%22x%22%3A233%2C%22y%22%3A332%2C%22c%22%3A%22%23E040FB%22%2C%22s%22%3A48%2C%22r%22%3A15%2C%22t%22%3A%22sparkle%22%7D%2C%7B%22x%22%3A69%2C%22y%22%3A50%2C%22c%22%3A%22%23E040FB%22%2C%22s%22%3A80%2C%22r%22%3A-15%2C%22t%22%3A%22sparkle%22%7D%5D%2C%22bg%22%3A%22%23000000%22%2C%22fm%22%3A%22rounded%22%7D">
+              <img 
+                src="/uchiwa_generator/sample_piece_shite.png" 
+                alt="ピースしてサンプル" 
+                style={{ 
+                  width: '100%', 
+                  height: 'auto', 
+                  borderRadius: '8px',
+                  border: '1px solid #ddd', 
+                  marginBottom: '5px'
+                }} 
+              />
+              <div style={{ fontSize: '12px' }}>ピースして</div>
+            </a>
+          </div>
+          
+          {/* ウインクしてサンプル */}
+          <div className="sample-item" style={{ 
+            textAlign: 'center',
+            width: '100px',
+            cursor: 'pointer' 
+          }}>
+            <a href="?state=%7B%22t%22%3A%5B%7B%22text%22%3A%22%E3%82%A6%E3%82%A1%5Cn%E3%82%A6%E3%82%A4%E3%83%B3%E3%82%AF%22%2C%22x%22%3A136%2C%22y%22%3A164%2C%22c%22%3A%22%2380deea%22%2C%22s%22%3A127%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A0%7D%2C%7B%22text%22%3A%22%E3%81%97%E3%81%A6%22%2C%22x%22%3A249%2C%22y%22%3A319%2C%22c%22%3A%22%2380deea%22%2C%22s%22%3A67%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A-9%7D%2C%7B%22text%22%3A%22%F0%9F%98%89+%22%2C%22x%22%3A298%2C%22y%22%3A135%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A114%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A13%7D%5D%2C%22d%22%3A%5B%7B%22x%22%3A117%2C%22y%22%3A301%2C%22c%22%3A%22%23FFD600%22%2C%22s%22%3A120%2C%22r%22%3A-15%2C%22t%22%3A%22star%22%7D%2C%7B%22x%22%3A299%2C%22y%22%3A227%2C%22c%22%3A%22%23FFD600%22%2C%22s%22%3A80%2C%22r%22%3A15%2C%22t%22%3A%22star%22%7D%2C%7B%22x%22%3A300%2C%22y%22%3A42%2C%22c%22%3A%22%23FFD600%22%2C%22s%22%3A48%2C%22r%22%3A0%2C%22t%22%3A%22star%22%7D%5D%2C%22bg%22%3A%22%23000000%22%2C%22fm%22%3A%22rounded%22%7D">
+              <img 
+                src="/uchiwa_generator/sample_wink_shite.png" 
+                alt="ウインクしてサンプル" 
+                style={{ 
+                  width: '100%', 
+                  height: 'auto', 
+                  borderRadius: '8px',
+                  border: '1px solid #ddd', 
+                  marginBottom: '5px'
+                }} 
+              />
+              <div style={{ fontSize: '12px' }}>ウインクして</div>
+            </a>
+          </div>
+          
+          {/* 指ハートしてサンプル */}
+          <div className="sample-item" style={{ 
+            textAlign: 'center',
+            width: '100px',
+            cursor: 'pointer' 
+          }}>
+            <a href="?state=%7B%22t%22%3A%5B%7B%22text%22%3A%22%E6%8C%87%22%2C%22x%22%3A105%2C%22y%22%3A126%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A172%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A0%7D%2C%7B%22text%22%3A%22%E3%83%8F%E2%88%92%E3%83%88%5Cn%22%2C%22x%22%3A253%2C%22y%22%3A244%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A76%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A0%7D%2C%7B%22text%22%3A%22%E3%81%97%E3%81%A6%22%2C%22x%22%3A308%2C%22y%22%3A271%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A40%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A1%7D%2C%7B%22text%22%3A%22%F0%9F%AB%B0%22%2C%22x%22%3A123%2C%22y%22%3A292%2C%22c%22%3A%22%23ffe54f%22%2C%22s%22%3A153%2C%22f%22%3A%22%5C%22M+PLUS+Rounded+1c%5C%22%2C+sans-serif%22%2C%22r%22%3A-45%7D%5D%2C%22d%22%3A%5B%7B%22x%22%3A219%2C%22y%22%3A277%2C%22c%22%3A%22%23FF4081%22%2C%22s%22%3A80%2C%22r%22%3A-15%2C%22t%22%3A%22heart%22%7D%2C%7B%22x%22%3A297%2C%22y%22%3A322%2C%22c%22%3A%22%23FF4081%22%2C%22s%22%3A48%2C%22r%22%3A15%2C%22t%22%3A%22heart%22%7D%2C%7B%22x%22%3A266%2C%22y%22%3A115%2C%22c%22%3A%22%23FF4081%22%2C%22s%22%3A120%2C%22r%22%3A15%2C%22t%22%3A%22heart%22%7D%5D%2C%22bg%22%3A%22%23000000%22%2C%22fm%22%3A%22rounded%22%7D">
+              <img 
+                src="/uchiwa_generator/sample_yubiheart_shite.png" 
+                alt="指ハートしてサンプル" 
+                style={{ 
+                  width: '100%', 
+                  height: 'auto', 
+                  borderRadius: '8px',
+                  border: '1px solid #ddd', 
+                  marginBottom: '5px'
+                }} 
+              />
+              <div style={{ fontSize: '12px' }}>指ハートして</div>
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
