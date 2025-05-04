@@ -279,44 +279,77 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
         </svg>
       </div>
       <div className="preview-actions">
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
+        {/* 2×2のグリッドレイアウトでボタンをまとめる */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(2, 1fr)', 
+          gap: '10px', 
+          width: '100%', 
+          maxWidth: '500px',
+          margin: '0 auto'
+        }}>
           <button 
             onClick={handleDownload}
             className="download-button"
-            style={{ width: '100%', maxWidth: '250px' }}
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '5px',
+              padding: '8px',
+              height: '40px'
+            }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
               <polyline points="7 10 12 15 17 10"></polyline>
               <line x1="12" y1="15" x2="12" y2="3"></line>
             </svg>
-            {isDownloading ? '保存中...' : '画像をダウンロード'}
+            <span>{isDownloading ? '保存中...' : 'ダウンロード'}</span>
           </button>
+          
           <button
             onClick={copyShareableUrl}
             className="share-button"
-            style={{ width: '100%', maxWidth: '250px' }}
+            style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '5px',
+              padding: '8px',
+              height: '40px'
+            }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
               <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
             </svg>
-            共有リンクをコピー
+            <span>共有リンクのコピー</span>
           </button>
           
-          {/* パラメータのみコピーボタンを表示 */}
-          {copyParametersOnly && (
+          {/* パラメータのみコピーボタン */}
+          {copyParametersOnly ? (
             <button
               onClick={copyParametersOnly}
               className="params-button"
-              style={{ width: '100%', maxWidth: '250px' }}
+              style={{ 
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '5px',
+                padding: '8px',
+                height: '40px'
+              }}
             >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
-              ?付きパラメータをコピー
+              <span>パラメータのみコピー</span>
             </button>
+          ) : (
+            // パラメータコピー機能がない場合は空のセルを表示
+            <div></div>
           )}
           
           {/* すべての設定をリセットするボタン */}
@@ -328,21 +361,24 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
             }}
             className="reset-button"
             style={{ 
-              width: '100%', 
-              maxWidth: '250px', 
-              marginTop: '10px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '5px',
+              padding: '8px',
+              height: '40px',
               backgroundColor: '#f8d7da',
               borderColor: '#f5c2c7',
               color: '#842029'
             }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
               <path d="M21 3v5h-5"></path>
               <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
               <path d="M8 16H3v5"></path>
             </svg>
-            すべての設定をリセット
+            <span>リセット</span>
           </button>
         </div>
       </div>
