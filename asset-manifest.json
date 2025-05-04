@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/uchiwa_generator/static/css/main.1c890ce7.css",
-    "main.js": "/uchiwa_generator/static/js/main.f61e2c62.js",
+    "main.js": "/uchiwa_generator/static/js/main.6a5d502b.js",
     "static/js/453.43d9c809.chunk.js": "/uchiwa_generator/static/js/453.43d9c809.chunk.js",
     "index.html": "/uchiwa_generator/index.html",
     "main.1c890ce7.css.map": "/uchiwa_generator/static/css/main.1c890ce7.css.map",
-    "main.f61e2c62.js.map": "/uchiwa_generator/static/js/main.f61e2c62.js.map",
+    "main.6a5d502b.js.map": "/uchiwa_generator/static/js/main.6a5d502b.js.map",
     "453.43d9c809.chunk.js.map": "/uchiwa_generator/static/js/453.43d9c809.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1c890ce7.css",
-    "static/js/main.f61e2c62.js"
+    "static/js/main.6a5d502b.js"
   ]
 }
