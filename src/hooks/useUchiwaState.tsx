@@ -65,7 +65,7 @@ const decodeState = (encoded: string) => {
         shape: deco.t || 'heart'
       })),
       bgColor: data.bg || '#000000',
-      fillMode: data.fm || 'uchiwa'
+      fillMode: data.fm || 'rounded'
     };
   } catch (e) {
     console.error('URLパラメータの解析に失敗しました', e);
@@ -438,7 +438,7 @@ export const useUchiwaState = () => {
 
   // リセット機能 (resetAllSettings) を修正
   const resetAllSettings = () => {
-    if (window.confirm('すべての設定をリセットしますか？変更内容は失われます。')) {
+    if (window.confirm('すべての設定をリセットし、トップページに戻りますか？変更内容は失われます。')) {
       // 単一テキスト関連のデフォルト値設定を削除
       // setTextColor('#FF69B4');
       // setFont('"M PLUS Rounded 1c", sans-serif');

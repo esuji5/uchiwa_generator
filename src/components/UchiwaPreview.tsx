@@ -102,15 +102,6 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
               />
             </>
           )}
-          {/* うちわ本体（持ち手なし）は「うちわのみ」モードのときだけ描画 */}
-          {fillMode === 'uchiwa' && (
-            <path
-              d="M50,130 Q20,250 90,340 Q180,370 270,340 Q340,250 310,130 Q260,50 180,50 Q100,50 50,130 Z"
-              fill={bgColor}
-              stroke="#333"
-              strokeWidth="2"
-            />
-          )}
           {/* テキスト要素（複数対応）*/}
           {textItems.length > 0 ? (
             // 複数テキストモード
@@ -382,6 +373,32 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
               ?付きパラメータをコピー
             </button>
           )}
+          
+          {/* すべての設定をリセットするボタン */}
+          <button
+            onClick={() => {
+              resetAllSettings();
+              // URLをトップに戻す (パス部分をクリア)
+              window.history.pushState({}, '', window.location.pathname.split('?')[0]);
+            }}
+            className="reset-button"
+            style={{ 
+              width: '100%', 
+              maxWidth: '250px', 
+              marginTop: '10px',
+              backgroundColor: '#f8d7da',
+              borderColor: '#f5c2c7',
+              color: '#842029'
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path>
+              <path d="M21 3v5h-5"></path>
+              <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path>
+              <path d="M8 16H3v5"></path>
+            </svg>
+            すべての設定をリセット
+          </button>
         </div>
       </div>
     </div>

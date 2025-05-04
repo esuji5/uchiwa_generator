@@ -29,7 +29,6 @@ export const decoShapes = [
 
 export const fillModes = [
   { value: 'none', label: '塗りなし' },
-  { value: 'uchiwa', label: 'うちわのみ' },
   { value: 'rounded', label: '角丸背景' },
   { value: 'all', label: '全塗り' },
 ];
