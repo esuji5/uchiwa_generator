@@ -137,7 +137,7 @@ export const TextSettings: React.FC<TextSettingsProps> = ({
                     {/* カラーパレット（明るめの色を追加） */}
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 4 }}>
                       {[ '#ffe54f', '#FF69B4','#80deea', '#ffb114', '#81f784',
-                       '#ff2222', '#ce93d8', '#ffffff'].map(c => (
+                       '#ff2222', '#ce93d8', '#ffffff','#1e2b5b','#3bc1d9'].map(c => (
                         <button
                           key={c}
                           type="button"
