@@ -19,6 +19,8 @@ export type DecoItem = {
   shape: ShapeType;
 };
 
+export type OutlineType = 'none' | 'black-white' | 'white-black';
+
 export type TextItem = {
   id: string;
   text: string;
@@ -28,6 +30,7 @@ export type TextItem = {
   fontSize: number;
   font: string;
   rotate: number; // 回転角度（度数法）
+  outlineType?: OutlineType; // テキスト縁取りのタイプ
 };
 
 export type DownloadMethod = 'domtoimage';

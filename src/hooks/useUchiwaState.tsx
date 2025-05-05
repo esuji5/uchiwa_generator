@@ -1,7 +1,7 @@
 // filepath: /Users/esuji/medi/uchiwa_generator/uchiwa-frontend/src/hooks/useUchiwaState.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { DecoItem, TextItem, DownloadMethod } from '../types';
+import { DecoItem, TextItem, DownloadMethod, OutlineType } from '../types';
 import { fonts, heartSizes, decoShapes } from '../constants';
 import { downloadWithDomToImage } from '../utils/domToImageUtils';
 
@@ -20,7 +20,8 @@ const encodeState = (state: {
       c: item.color,
       s: item.fontSize,
       f: item.font,
-      r: item.rotate || 0
+      r: item.rotate || 0,
+      o: item.outlineType || 'none' // テキスト縁取りタイプ
     })),
     d: state.decos.map(deco => ({
       x: Math.round(deco.x),
@@ -53,7 +54,8 @@ const decodeState = (encoded: string) => {
         color: item.c || '#FF69B4',
         fontSize: item.s || 40,
         font: item.f || fonts[0].value,
-        rotate: item.r || 0
+        rotate: item.r || 0,
+        outlineType: item.o || 'none'
       })),
       decos: (data.d || []).slice(0, 5).map((deco: any) => ({
         id: uuidv4(),
@@ -105,10 +107,11 @@ export const useUchiwaState = () => {
       try {
         const parsedItems = JSON.parse(saved);
         if (Array.isArray(parsedItems) && parsedItems.length > 0) {
-          // 既存のアイテムに回転角度がなければ追加
+          // 既存のアイテムに回転角度と縁取りタイプがなければ追加
           return parsedItems.map((item: TextItem) => ({
             ...item,
-            rotate: item.rotate !== undefined ? item.rotate : 0
+            rotate: item.rotate !== undefined ? item.rotate : 0,
+            outlineType: item.outlineType || 'none'
           }));
         }
       } catch {}
@@ -122,7 +125,8 @@ export const useUchiwaState = () => {
       color: '#FF69B4',
       fontSize: 60,
       font: '"M PLUS Rounded 1c", sans-serif',
-      rotate: 0
+      rotate: 0,
+      outlineType: 'none' // デフォルトは縁取りなし
     }];
   });
   const [bgColor, setBgColor] = useState(initialState?.bgColor || '#000000');
@@ -398,6 +402,7 @@ export const useUchiwaState = () => {
     let color = '#FF69B4'; // デフォルト色
     let fontSize = 40; // デフォルトフォントサイズ
     let font = '"M PLUS Rounded 1c", sans-serif'; // デフォルトフォント
+    let outlineType: OutlineType = 'none'; // デフォルトの縁取りタイプ
     
     if (textItems.length > 0) {
       // 配列の最後の要素から設定を取得
@@ -405,6 +410,7 @@ export const useUchiwaState = () => {
       color = lastItem.color;
       fontSize = lastItem.fontSize;
       font = lastItem.font;
+      outlineType = lastItem.outlineType || 'none';
     }
     
     setTextItems([...textItems, {
@@ -415,6 +421,7 @@ export const useUchiwaState = () => {
       color, // 最後のアイテムから引き継いだ色
       fontSize, // 最後のアイテムから引き継いだフォントサイズ
       font, // 最後のアイテムから引き継いだフォント
+      outlineType, // 最後のアイテムから引き継いだ縁取りタイプ
       rotate: 0
     }]);
   };
@@ -484,7 +491,8 @@ export const useUchiwaState = () => {
         color: '#FF69B4',
         fontSize: 60,
         font: '"M PLUS Rounded 1c", sans-serif',
-        rotate: 0
+        rotate: 0,
+        outlineType: 'none' // デフォルトは縁取りなし
       }]);
       
       // 図形をクリア

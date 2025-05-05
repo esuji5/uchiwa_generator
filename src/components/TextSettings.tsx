@@ -199,6 +199,21 @@ export const TextSettings: React.FC<TextSettingsProps> = ({
                   ))}
                 </select>
               </div>
+
+              {/* MEMO:機能は残して表示はしないでおく */}
+              {/* 縁取りタイプの選択 */}
+              {/* <div className="input-group">
+                <label htmlFor={`outline-type-${item.id}`}>縁取りの種類</label>
+                <select 
+                  id={`outline-type-${item.id}`}
+                  value={item.outlineType || 'none'}
+                  onChange={e => updateTextItem(item.id, { outlineType: e.target.value as any })}
+                >
+                  <option value="none">標準（黒→白）</option>
+                  <option value="black-white">テキスト→黒→白</option>
+                  <option value="white-black">テキスト→白→黒</option>
+                </select>
+              </div> */}
               
               <div className="input-group">
                 <label htmlFor={`rotate-${item.id}`} style={{ fontSize: 13, marginBottom: 3 }}>回転角度: {item.rotate || 0}°</label>

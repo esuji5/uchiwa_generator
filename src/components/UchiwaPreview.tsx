@@ -114,44 +114,138 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
               >
                 {item.text.split(/\r?\n/).map((line, i, arr) => (
                   <g key={`${item.id}-${i}`}>
-                    {/* 白縁 */}
-                    <text
-                      x={item.x}
-                      y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
-                      textAnchor="middle"
-                      fontFamily={item.font}
-                      fontSize={item.fontSize}
-                      fontWeight="bold"
-                      stroke="#fff"
-                      strokeWidth={Math.max(16, item.fontSize/3.5)}
-                      paintOrder="stroke"
-                      fill="none"
-                      style={{ 
-                        dominantBaseline: 'middle',
-                        fontFamily: item.font
-                      }}
-                    >
-                      {line}
-                    </text>
-                    {/* 黒縁 */}
-                    <text
-                      x={item.x}
-                      y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
-                      textAnchor="middle"
-                      fontFamily={item.font}
-                      fontSize={item.fontSize}
-                      fontWeight="bold"
-                      stroke="#000"
-                      strokeWidth={Math.max(10, item.fontSize/6)}
-                      paintOrder="stroke"
-                      fill="none"
-                      style={{ 
-                        dominantBaseline: 'middle',
-                        fontFamily: item.font
-                      }}
-                    >
-                      {line}
-                    </text>
+                    {/* 縁取りなし */}
+                    {(!item.outlineType || item.outlineType === 'none') && (
+                      <>
+                        {/* 白縁 */}
+                        <text
+                          x={item.x}
+                          y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
+                          textAnchor="middle"
+                          fontFamily={item.font}
+                          fontSize={item.fontSize}
+                          fontWeight="bold"
+                          stroke="#fff"
+                          strokeWidth={Math.max(16, item.fontSize/3.5)}
+                          paintOrder="stroke"
+                          fill="none"
+                          style={{ 
+                            dominantBaseline: 'middle',
+                            fontFamily: item.font
+                          }}
+                        >
+                          {line}
+                        </text>
+                        {/* 黒縁 */}
+                        <text
+                          x={item.x}
+                          y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
+                          textAnchor="middle"
+                          fontFamily={item.font}
+                          fontSize={item.fontSize}
+                          fontWeight="bold"
+                          stroke="#000"
+                          strokeWidth={Math.max(10, item.fontSize/6)}
+                          paintOrder="stroke"
+                          fill="none"
+                          style={{ 
+                            dominantBaseline: 'middle',
+                            fontFamily: item.font
+                          }}
+                        >
+                          {line}
+                        </text>
+                      </>
+                    )}
+
+                    {/* テキスト→黒→白 の順の縁取り */}
+                    {item.outlineType === 'black-white' && (
+                      <>
+                        {/* 外側の白縁 */}
+                        <text
+                          x={item.x}
+                          y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
+                          textAnchor="middle"
+                          fontFamily={item.font}
+                          fontSize={item.fontSize}
+                          fontWeight="bold"
+                          stroke="#fff"
+                          strokeWidth={Math.max(16, item.fontSize/3.5)}
+                          paintOrder="stroke"
+                          fill="none"
+                          style={{ 
+                            dominantBaseline: 'middle',
+                            fontFamily: item.font
+                          }}
+                        >
+                          {line}
+                        </text>
+                        {/* 内側の黒縁 */}
+                        <text
+                          x={item.x}
+                          y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
+                          textAnchor="middle"
+                          fontFamily={item.font}
+                          fontSize={item.fontSize}
+                          fontWeight="bold"
+                          stroke="#000"
+                          strokeWidth={Math.max(10, item.fontSize/6)}
+                          paintOrder="stroke"
+                          fill="none"
+                          style={{ 
+                            dominantBaseline: 'middle',
+                            fontFamily: item.font
+                          }}
+                        >
+                          {line}
+                        </text>
+                      </>
+                    )}
+
+                    {/* テキスト→白→黒 の順の縁取り */}
+                    {item.outlineType === 'white-black' && (
+                      <>
+                        {/* 外側の黒縁 */}
+                        <text
+                          x={item.x}
+                          y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
+                          textAnchor="middle"
+                          fontFamily={item.font}
+                          fontSize={item.fontSize}
+                          fontWeight="bold"
+                          stroke="#000"
+                          strokeWidth={Math.max(16, item.fontSize/3.5)}
+                          paintOrder="stroke"
+                          fill="none"
+                          style={{ 
+                            dominantBaseline: 'middle',
+                            fontFamily: item.font
+                          }}
+                        >
+                          {line}
+                        </text>
+                        {/* 内側の白縁 */}
+                        <text
+                          x={item.x}
+                          y={item.y + (i - (arr.length - 1) / 2) * item.fontSize}
+                          textAnchor="middle"
+                          fontFamily={item.font}
+                          fontSize={item.fontSize}
+                          fontWeight="bold"
+                          stroke="#fff"
+                          strokeWidth={Math.max(10, item.fontSize/6)}
+                          paintOrder="stroke"
+                          fill="none"
+                          style={{ 
+                            dominantBaseline: 'middle',
+                            fontFamily: item.font
+                          }}
+                        >
+                          {line}
+                        </text>
+                      </>
+                    )}
+
                     {/* 本体 */}
                     <text
                       x={item.x}
@@ -187,7 +281,7 @@ export const UchiwaPreview: React.FC<UchiwaPreviewProps> = ({
             // 後方互換性のための従来の単一テキストモード
             text.split(/\r?\n/).map((line, i, arr) => (
               <g key={i}>
-                {/* 白縁 */}
+                {/* 白縁 (常に標準の縁取り) */}
                 <text
                   x="180"
                   y={205 + (i - (arr.length - 1) / 2) * fontSize}
