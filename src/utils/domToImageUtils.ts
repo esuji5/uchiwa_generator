@@ -1,4 +1,5 @@
-import domtoimage from 'dom-to-image-more';
+// @ts-ignore型エラーを無視するため、anyとしてインポート
+import * as domtoimage from 'dom-to-image-more';
 import { fonts } from '../constants';
 
 // dom-to-image-moreを使用した画像ダウンロード関数
@@ -138,47 +139,75 @@ export const downloadWithDomToImage = (
           return false;
         };
             
-        // ローカルフォントがなければ読み込みを試みる
+        // ローカルフォントがなければ読み込みを試みる - 直接TTFを参照するスタイルを追加
         const loadGoogleFont = () => {
-          if (!document.querySelector('link[href*="fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c"]')) {
-            const linkEl = document.createElement('link');
-            linkEl.rel = 'stylesheet';
-            linkEl.href = 'https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700&display=swap';
-            linkEl.crossOrigin = 'anonymous'; // CORS対策
+          // M PLUS Rounded 1c フォントを直接参照するスタイルを作成
+          const fontStyleId = 'mplus-rounded-font-face';
+          if (!document.getElementById(fontStyleId)) {
+            const styleEl = document.createElement('style');
+            styleEl.id = fontStyleId;
             
-            linkEl.onload = () => {
-              console.log('Google Fonts CSS が読み込まれました。');
-              // CSSロード後、フォント自体の準備を待つ
-              document.fonts.load('1em "M PLUS Rounded 1c"').then(() => {
-                console.log('Google Fonts (M PLUS Rounded 1c) が準備完了しました。');
-                googleFontLoaded = true;
-                checkCompletion();
-              }).catch(err => {
-                console.error("Google Font の読み込みに失敗:", err);
-                googleFontLoaded = true; // エラーでも次に進む
-                checkCompletion();
-              });
-            };
+            // 直接TTFファイルを参照するスタイルを定義
+            styleEl.textContent = `
+              /* M PLUS Rounded 1c フォントの直接参照 */
+              @font-face {
+                font-family: 'M PLUS Rounded 1c';
+                font-style: normal;
+                font-weight: 400;
+                font-display: swap;
+                src: local('M PLUS Rounded 1c'), local('M PLUS Rounded 1c Regular'),
+                     url('https://fonts.gstatic.com/s/mplusrounded1c/v16/VdGBAYIAV6gnpUpoWwNkYvrugw9RuM064ZsK.ttf') format('truetype');
+              }
+              @font-face {
+                font-family: 'M PLUS Rounded 1c';
+                font-style: normal;
+                font-weight: 700;
+                font-display: swap;
+                src: local('M PLUS Rounded 1c Bold'),
+                     url('https://fonts.gstatic.com/s/mplusrounded1c/v16/VdGBAYIAV6gnpUpoWwNkYvrugw9RuM064ZsK.ttf') format('truetype');
+              }
+            `;
+            document.head.appendChild(styleEl);
+
+            // Google Fontsサーバーへのプリコネクト設定
+            if (!document.querySelector('link[rel="preconnect"][href="https://fonts.googleapis.com"]')) {
+              const preconnectLink = document.createElement('link');
+              preconnectLink.rel = 'preconnect';
+              preconnectLink.href = 'https://fonts.googleapis.com';
+              document.head.appendChild(preconnectLink);
+              
+              const gstaticLink = document.createElement('link');
+              gstaticLink.rel = 'preconnect';
+              gstaticLink.href = 'https://fonts.gstatic.com';
+              gstaticLink.crossOrigin = 'anonymous';
+              document.head.appendChild(gstaticLink);
+            }
             
-            linkEl.onerror = () => {
-              console.error("Google Fonts CSS の読み込みに失敗しました。代替フォントを使用します。");
-              googleFontLoaded = true; // エラーでも次に進む
-              checkCompletion();
-            };
-            
-            document.head.appendChild(linkEl);
-          } else {
-            // 既にlinkタグがある場合は、フォントの準備を直接待つ
-            document.fonts.load('1em "M PLUS Rounded 1c"').then(() => {
-              console.log('Google Fonts (M PLUS Rounded 1c) は既に準備完了しています。');
-              googleFontLoaded = true;
-              checkCompletion();
-            }).catch(err => {
-              console.error("Google Font の読み込みに失敗:", err);
-              googleFontLoaded = true; // エラーでも次に進む
-              checkCompletion();
-            });
+            // 既存のlinkタグがあれば、それは使わずに新しいスタイルを優先
+            const existingLink = document.querySelector('link[href*="fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c"]');
+            if (existingLink) {
+              console.log('既存のGoogle Fontsリンクがありますが、ローカル定義を優先します');
+            }
           }
+          
+          // フォントの準備を待つ - Promise.allSettledで確実に進行
+          Promise.allSettled([
+            document.fonts.load('1em "M PLUS Rounded 1c"'),
+            document.fonts.load('700 1em "M PLUS Rounded 1c"')
+          ]).then((results) => {
+            const successCount = results.filter(r => r.status === 'fulfilled').length;
+            if (successCount > 0) {
+              console.log(`M PLUS Rounded 1c フォントが準備完了しました (${successCount}/${results.length}成功)`);
+            } else {
+              console.warn('フォント読み込みは失敗しましたが、処理を続行します');
+            }
+            googleFontLoaded = true; // どちらの場合も処理を続行
+            checkCompletion();
+          }).catch(err => {
+            console.error("M PLUS Rounded 1c フォントの読み込みでエラー:", err);
+            googleFontLoaded = true; // エラーでも次に進む
+            checkCompletion();
+          });
         };
         
         // ローカルフォントを確認し、なければ読み込む
@@ -192,12 +221,15 @@ export const downloadWithDomToImage = (
           const styleEl = document.createElement('style');
           styleEl.id = twemojiStyleId;
           styleEl.textContent = `
+            /* 絵文字の表示を改善するためのフォント定義 */
             @font-face {
               font-family: 'Twemoji Mozilla';
-              src: url('https://cdn.jsdelivr.net/npm/@svgmoji/twemoji@latest/fonts/TwitterColorEmoji-SVGinOT.ttf') format('truetype');
+              /* システムのネイティブ絵文字フォントを使用 */
+              src: local('Apple Color Emoji'), local('Segoe UI Emoji'), local('Noto Color Emoji'), local('Segoe UI Symbol');
+              unicode-range: U+1F300-1F5FF, U+1F600-1F64F, U+1F680-1F6FF, U+2600-26FF, U+2700-27BF, U+1F1E6-1F1FF, U+1F191-1F251, U+1F004, U+1F0CF, U+1F170-1F171, U+1F17E-1F17F, U+1F18E, U+3030, U+2B50, U+2B55, U+2934-2935, U+2B05-2B07, U+2B1B-2B1C, U+3297, U+3299, U+303D, U+00A9, U+00AE, U+2122, U+23F3, U+24C2, U+23E9-23EF, U+25AA-25AB, U+25FB-25FE, U+25B6, U+25C0, U+2B06, U+2197-2198, U+2195, U+2194, U+21A9-21AA, U+21AA, U+231A-231B, U+1F190, U+1F19A;
               font-weight: normal;
               font-style: normal;
-              font-display: swap; /* フォント読み込み中の挙動 */
+              font-display: swap;
             }
           `;
           document.head.appendChild(styleEl);
@@ -268,8 +300,39 @@ export const downloadWithDomToImage = (
           node.setAttribute('font-family', '"Twemoji Mozilla", "M PLUS Rounded 1c", "Hiragino Maru Gothic ProN", "ヒラギノ丸ゴ ProN W4", "Segoe UI Emoji", "Apple Color Emoji", sans-serif');
           node.setAttribute('font-weight', 'bold');
           
-          // 絵文字が含まれているかチェック (テキストノードのみ)
-          const hasEmoji = /[\p{Emoji}]/u.test(node.textContent || '');
+          // 絵文字が含まれているかチェック (ES5互換の方法で)
+          // 絵文字の一般的なUnicode範囲をチェック
+          const textContent = node.textContent || '';
+          const hasEmoji = (function(text) {
+            // 簡易的な絵文字検出（完全ではありませんが、一般的な絵文字をカバー）
+            const emojiRanges = [
+              [0x1F600, 0x1F64F], // 顔文字、感情
+              [0x1F300, 0x1F5FF], // その他の絵文字
+              [0x1F680, 0x1F6FF], // 輸送と地図の記号
+              [0x1F700, 0x1F77F], // 錬金術記号
+              [0x1F780, 0x1F7FF], // 幾何学的形状
+              [0x1F800, 0x1F8FF], // 補足矢印
+              [0x1F900, 0x1F9FF], // 補足記号と絵文字
+              [0x1FA00, 0x1FA6F], // チェス駒
+              [0x1FA70, 0x1FAFF]  // 記号
+            ];
+            
+            for (let i = 0; i < text.length; i++) {
+              const code = text.codePointAt(i) || 0;
+              // サロゲートペアのチェック
+              if (code > 0xFFFF) {
+                i++; // サロゲートペアの2バイト目をスキップ
+              }
+              
+              // 絵文字範囲のチェック
+              for (const [start, end] of emojiRanges) {
+                if (code >= start && code <= end) {
+                  return true;
+                }
+              }
+            }
+            return false;
+          })(textContent);
           
           // 既存のスタイル属性に追加
           const currentStyle = node.getAttribute('style') || '';
@@ -294,7 +357,66 @@ export const downloadWithDomToImage = (
 
         try {
           // シンプルな設定で画像生成を行う
-          // domtoimage.toPng の style オプションから Twemoji を優先的に適用
+          // 事前に外部スタイルシートをインラインに変換
+          // CORSエラー回避のため、Google Fontsのリンクをコメントアウト
+          const externalStylesheets = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+          const googleFontLinks = externalStylesheets.filter(link => 
+            (link as HTMLLinkElement).href && 
+            (link as HTMLLinkElement).href.includes('fonts.googleapis.com')
+          );
+          
+          // 一時的にGoogle Fontsのリンクを非アクティブ化
+          googleFontLinks.forEach(link => {
+            link.setAttribute('data-original-href', (link as HTMLLinkElement).href);
+            (link as HTMLLinkElement).href = '';
+          });
+          
+          // fontのCORS問題を避けるため、一時的なインラインスタイルを追加
+          const fontInlineStyle = document.createElement('style');
+          fontInlineStyle.id = 'temp-font-style-for-export';
+          fontInlineStyle.textContent = `
+            text, tspan {
+              font-family: "Twemoji Mozilla", "M PLUS Rounded 1c", sans-serif !important;
+              font-weight: bold !important;
+              -webkit-font-smoothing: antialiased !important;
+            }
+            
+            /* 直接TTFファイルを参照する定義を追加 */
+            @font-face {
+              font-family: 'M PLUS Rounded 1c';
+              font-style: normal;
+              font-weight: 400;
+              font-display: swap;
+              src: local('M PLUS Rounded 1c'), 
+                   url('https://fonts.gstatic.com/s/mplusrounded1c/v16/VdGBAYIAV6gnpUpoWwNkYvrugw9RuM064ZsK.ttf') format('truetype');
+            }
+            
+            @font-face {
+              font-family: 'M PLUS Rounded 1c';
+              font-style: normal;
+              font-weight: 700;
+              font-display: swap;
+              src: local('M PLUS Rounded 1c Bold'), 
+                   url('https://fonts.gstatic.com/s/mplusrounded1c/v16/VdGBAYIAV6gnpUpoWwNkYvrugw9RuM064ZsK.ttf') format('truetype');
+            }
+          `;
+          document.head.appendChild(fontInlineStyle);
+          
+          // フォント関連のエラーを無視するようにする
+          const originalConsoleError = console.error;
+          console.error = function(msg, ...args) {
+            // フォント関連のネットワークエラーを無視
+            if (typeof msg === 'string' && 
+                (msg.includes('NetworkError') || 
+                 msg.includes('Failed to read the \'cssRules\'') ||
+                 msg.includes('Font'))) {
+              console.warn('フォントエラーを無視: ', msg);
+              return;
+            }
+            originalConsoleError.apply(console, [msg, ...args]);
+          };
+          
+          // 標準オプションでより少ないスタイルを使用
           return domtoimage.toPng(previewElement, {
             quality: 1,
             bgcolor: backgroundColor || 'transparent',
@@ -319,7 +441,27 @@ export const downloadWithDomToImage = (
                 'font-family': '"Twemoji Mozilla", sans-serif',
                 'font-feature-settings': '"liga" 1'
               }
+            }}
+
+          ).finally(() => {
+            // コンソールエラー処理を元に戻す
+            console.error = originalConsoleError;
+          }).then((dataUrl) => {
+            // Google Fontsのリンクを元に戻す
+            googleFontLinks.forEach(link => {
+              const originalHref = (link as HTMLLinkElement).getAttribute('data-original-href');
+              if (originalHref) {
+                (link as HTMLLinkElement).href = originalHref;
+              }
+            });
+            
+            // 一時的なスタイルを削除
+            const tempFontStyle = document.getElementById('temp-font-style-for-export');
+            if (tempFontStyle) {
+              document.head.removeChild(tempFontStyle);
             }
+            
+            return dataUrl;
           });
         } catch (error) {
           console.error('DOM操作エラー', error);

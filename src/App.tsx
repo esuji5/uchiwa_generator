@@ -35,23 +35,141 @@ function App() {
     resetAllSettings
   } = useUchiwaState();
 
-  // フォントの読み込み確認 (変更なし)
+  // 強化したフォント読み込み確認
+  const [fontsLoaded, setFontsLoaded] = React.useState(false);
+  
   React.useEffect(() => {
-    if (document.fonts && document.fonts.load) {
-      // フォントの読み込みを試行
-      Promise.all([
-        document.fonts.load('400 16px "M PLUS Rounded 1c"'),
-        document.fonts.load('700 16px "M PLUS Rounded 1c"')
-      ]).then(() => {
-        console.log('M PLUS Rounded 1c フォントが読み込まれました');
-      }).catch(err => {
-        console.warn('フォント読み込みエラー:', err);
+    // フォント読み込みの状態を確認する関数
+    const checkFontAvailability = () => {
+      // テスト用テキスト表示
+      const testText = document.createElement('div');
+      testText.style.cssText = `
+        position: absolute; visibility: hidden; opacity: 0;
+        height: 0; font-size: 16px; white-space: nowrap;
+      `;
+      testText.textContent = 'あいうえお漢字サンプルABCDEF123456';
+      document.body.appendChild(testText);
+      
+      // 基準幅を取得（sans-serif）
+      testText.style.fontFamily = 'sans-serif';
+      const defaultWidth = testText.offsetWidth;
+      
+      // 各フォントでの表示幅を確認
+      const fontTests = [
+        { name: 'M PLUS Rounded 1c', family: '"M PLUS Rounded 1c", sans-serif' },
+        { name: 'ヒラギノ丸ゴ', family: '"ヒラギノ丸ゴ Pro W4", "Hiragino Maru Gothic Pro", sans-serif' }
+      ];
+      
+      const results = fontTests.map(font => {
+        testText.style.fontFamily = font.family;
+        const width = testText.offsetWidth;
+        const available = defaultWidth !== width;
+        
+        return { 
+          name: font.name, 
+          available, 
+          width 
+        };
       });
+      
+      // どれか一つでも利用可能なフォントがあるか確認
+      const anyFontAvailable = results.some(r => r.available);
+      
+      // 検証用に結果をログに出力
+      console.log('フォント利用可能状況:', {
+        利用可能なフォントあり: anyFontAvailable,
+        'sans-serif幅': defaultWidth,
+        詳細: results
+      });
+      
+      document.body.removeChild(testText);
+      return anyFontAvailable;
+    };
+    
+    if (document.fonts) {
+      // フォント読み込みを強化（3回試行）
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      const tryLoadFonts = () => {
+        attempts++;
+        console.log(`フォント読み込み試行 (${attempts}/${maxAttempts})`);
+        
+        // フォントロード処理をallSettledで行い、一部失敗してもすべてを待つ
+        Promise.allSettled([
+          // ローカルと代替フォントの両方をロード試行
+          // document.fonts.load('400 16px "M PLUS Rounded 1c"'),
+          document.fonts.load('700 16px "M PLUS Rounded 1c"'),
+          // fallback fonts
+          // document.fonts.load('400 16px "Hiragino Maru Gothic Pro"'),
+          // document.fonts.load('700 16px "Hirag　ino Maru Gothic Pro"')
+        ]).then((results) => {
+          // 読み込み結果を確認
+          const successCount = results.filter(r => r.status === 'fulfilled').length;
+          console.log(`フォント読み込み試行結果: 成功=${successCount}/${results.length}`);
+          
+          // 読み込み完了後、実際に利用可能か確認
+          const isAvailable = checkFontAvailability();
+          
+          if (isAvailable) {
+            console.log('必要なフォントが利用可能になりました');
+            setFontsLoaded(true);
+          } else if (attempts < maxAttempts) {
+            // 読み込みが成功しなかった場合、少し待って再試行
+            console.log('フォント未準備、再試行します');
+            setTimeout(tryLoadFonts, 800);
+          } else {
+            console.warn('フォント読み込みの最大試行回数に達しました、フォールバックを使用します');
+            // いずれにしてもアプリケーションを表示する
+            setFontsLoaded(true);
+          }
+        }).catch(err => {
+          console.warn('フォント読み込みエラー:', err);
+          // ネットワークエラーなどの場合でも、ローカルフォントを確認
+          const isAvailable = checkFontAvailability();
+          if (isAvailable) {
+            console.log('エラー発生しましたが、フォントは利用可能です');
+            setFontsLoaded(true);
+          } else if (attempts < maxAttempts) {
+            // エラー時も再試行
+            console.log('フォント未準備とエラー発生、再試行します');
+            setTimeout(tryLoadFonts, 800);
+          } else {
+            console.warn('フォント読み込み試行終了、フォールバックに切り替えます');
+            setFontsLoaded(true);
+          }
+        });
+      };
+      
+      tryLoadFonts();
+    } else {
+      // document.fontsが使えない環境では即座に読み込み完了とする
+      setFontsLoaded(true);
     }
   }, []);
   
+  // フォントローディングのためのフォールバックフォントリスト
+  const fontFamily = fontsLoaded 
+    ? '"M PLUS Rounded 1c", "Kosugi Maru", "Hiragino Maru Gothic Pro", "ヒラギノ丸ゴ Pro W4", sans-serif'
+    : '"M PLUS Rounded 1c", "Kosugi Maru", "Hiragino Maru Gothic Pro", "ヒラギノ丸ゴ Pro W4", "メイリオ", "Meiryo", sans-serif';
+  
   return (
-    <div className="app-container" style={{ fontFamily: '"M PLUS Rounded 1c", sans-serif' }}>
+    <div className="app-container" style={{ fontFamily }}>
+      {!fontsLoaded && (
+        <div style={{ 
+          position: 'fixed', 
+          bottom: '10px', 
+          right: '10px', 
+          background: 'rgba(255,255,255,0.9)', 
+          padding: '8px 12px', 
+          borderRadius: '4px',
+          fontSize: '12px',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          zIndex: 9999
+        }}>
+          フォント読み込み中...
+        </div>
+      )}
       <div className="container">
         <div className="header">
           <h1 className="title">推し活うちわジェネレーター</h1>
@@ -61,16 +179,6 @@ function App() {
         <div className="main-content">
           <div className="controls-container">
             <TextSettings 
-              // 単一テキスト props を削除
-              // text={text}
-              // setText={setText}
-              // textColor={textColor}
-              // setTextColor={setTextColor}
-              // font={font}
-              // setFont={setFont}
-              // fontSize={fontSize}
-              // setFontSize={setFontSize}
-              
               // 維持する props
               bgColor={bgColor}
               setBgColor={setBgColor}

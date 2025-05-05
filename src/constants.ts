@@ -1,5 +1,5 @@
 export const fonts = [
-  { label: 'M PLUS 丸ゴシック', value: '"M PLUS Rounded 1c", sans-serif' },
+  { label: 'M PLUS Rounded 1c', value: '"M PLUS Rounded 1c", sans-serif' },
   { label: 'ヒラギノ丸ゴシック', value: '"ヒラギノ丸ゴ Pro W4", "ヒラギノ丸ゴ Pro", "Hiragino Maru Gothic Pro", sans-serif' },
 ];
 

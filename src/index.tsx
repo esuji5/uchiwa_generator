@@ -37,7 +37,6 @@ const preloadFont = async () => {
       
       const results = {
         mPlusRounded: checkFont('M PLUS Rounded 1c'),
-        mPlusJP: checkFont('M PLUS 丸ゴシック'),
         hiragino: checkFont('ヒラギノ丸ゴ Pro'),
         hiraginoEn: checkFont('Hiragino Maru Gothic Pro')
       };
@@ -49,11 +48,9 @@ const preloadFont = async () => {
     if (document.fonts) {
       // 両方のフォントとそれぞれの日英表記を読み込み試行
       const fontPromises = [
-        // M PLUS フォント（日英表記両方）
+        // M PLUS フォント
         document.fonts.load('400 16px "M PLUS Rounded 1c"'),
         document.fonts.load('700 16px "M PLUS Rounded 1c"'),
-        document.fonts.load('400 16px "M PLUS 丸ゴシック"'), 
-        document.fonts.load('700 16px "M PLUS 丸ゴシック"'),
         
         // ヒラギノ丸ゴシック（日英表記両方）
         document.fonts.load('400 16px "ヒラギノ丸ゴ Pro W4"'),
@@ -83,7 +80,6 @@ const preloadFont = async () => {
       
       const fontFamilies = [
         '"M PLUS Rounded 1c", sans-serif',
-        '"M PLUS 丸ゴシック", sans-serif',
         '"ヒラギノ丸ゴ Pro W4", sans-serif',
         '"Hiragino Maru Gothic Pro", sans-serif'
       ];
