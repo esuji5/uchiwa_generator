@@ -202,7 +202,8 @@ export const useUchiwaState = () => {
     setIsDownloading(true);
 
     // テキストの内容を結合してファイル名を生成
-    let combinedText = textItems.map(item => item.text).join('').trim();
+    console.log('textItems:', textItems);
+    let combinedText = textItems.map(item => item.text.replace(/[\n]/g, '')).join('').trim();
     // ファイル名に使用できない文字を除去
     combinedText = combinedText.replace(/[\/\\:*?"<>|]/g, '');
     // 長すぎる場合は短縮
@@ -393,14 +394,27 @@ export const useUchiwaState = () => {
         newY = centerY;
     }
     
+    // 最後のテキストアイテムから設定を引き継ぐ
+    let color = '#FF69B4'; // デフォルト色
+    let fontSize = 40; // デフォルトフォントサイズ
+    let font = '"M PLUS Rounded 1c", sans-serif'; // デフォルトフォント
+    
+    if (textItems.length > 0) {
+      // 配列の最後の要素から設定を取得
+      const lastItem = textItems[textItems.length - 1];
+      color = lastItem.color;
+      fontSize = lastItem.fontSize;
+      font = lastItem.font;
+    }
+    
     setTextItems([...textItems, {
       id: uuidv4(),
       text: '',
       x: newX,
       y: newY,
-      color: '#FF69B4', // デフォルト色を直接指定
-      fontSize: 40,
-      font: '"M PLUS Rounded 1c", sans-serif', // デフォルトフォントを直接指定
+      color, // 最後のアイテムから引き継いだ色
+      fontSize, // 最後のアイテムから引き継いだフォントサイズ
+      font, // 最後のアイテムから引き継いだフォント
       rotate: 0
     }]);
   };
