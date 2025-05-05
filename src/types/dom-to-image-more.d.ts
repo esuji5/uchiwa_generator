@@ -7,6 +7,7 @@ declare module 'dom-to-image-more' {
     filter?: (node: Node) => boolean;
     bgcolor?: string;
     cacheBust?: boolean;
+    embedFonts?: boolean;
   }
 
   export function toSvg(node: HTMLElement, options?: DomToImageOptions): Promise<string>;
