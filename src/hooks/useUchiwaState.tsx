@@ -201,10 +201,21 @@ export const useUchiwaState = () => {
   const handleDomToImageDownload = () => {
     setIsDownloading(true);
 
+    // テキストの内容を結合してファイル名を生成
+    let combinedText = textItems.map(item => item.text).join('').trim();
+    // ファイル名に使用できない文字を除去
+    combinedText = combinedText.replace(/[\/\\:*?"<>|]/g, '');
+    // 長すぎる場合は短縮
+    if (combinedText.length > 30) {
+      combinedText = combinedText.substring(0, 30);
+    }
+    // 空の場合はデフォルト名
+    const fileName = combinedText ? `uchiwa_${combinedText}.png` : 'uchiwa.png';
+
     downloadWithDomToImage(
       '.preview-svg-container', 
       fillMode === 'none' ? '#ffffff' : null,
-      'uchiwa.png' // フォントファミリー引数は削除
+      fileName // 生成したファイル名を使用
     )
     .then(() => {
       setIsDownloading(false);
