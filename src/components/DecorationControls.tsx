@@ -1,7 +1,7 @@
-import React from 'react';
+import type React from 'react';
+import { decoShapes, heartSizes } from '../constants';
 // ShapeType をインポート
-import { DecoItem, ShapeType } from '../types';
-import { heartSizes, decoShapes } from '../constants';
+import { DecoItem, type ShapeType } from '../types';
 
 interface DecorationControlsProps {
   selectedHeartSize: number;
@@ -21,7 +21,7 @@ const DecorationControls: React.FC<DecorationControlsProps> = ({
   addDeco,
   addRandomDecos, // この Prop は現在 UI からは使われていない
   addRandomDecosByShape,
-  clearDecos
+  clearDecos,
 }) => {
   return (
     <div className="control-panel">
@@ -30,8 +30,11 @@ const DecorationControls: React.FC<DecorationControlsProps> = ({
         <div className="input-group">
           <label>サイズ</label>
           <div className="radio-group" style={{ display: 'flex', gap: 15, marginTop: 5 }}>
-            {heartSizes.map(s => (
-              <label key={s.value} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+            {heartSizes.map((s) => (
+              <label
+                key={s.value}
+                style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+              >
                 <input
                   type="radio"
                   name="deco-size"
@@ -46,10 +49,10 @@ const DecorationControls: React.FC<DecorationControlsProps> = ({
           </div>
         </div>
       </div>
-      
+
       <div className="control-section">
         <div style={{ marginBottom: 10, display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-          {decoShapes.map(d => (
+          {decoShapes.map((d) => (
             <div key={d.shape} className="deco-btn-group" style={{ marginBottom: 5 }}>
               <button
                 onClick={() => addDeco(d.shape as ShapeType, d.color, 0)}
@@ -76,7 +79,9 @@ const DecorationControls: React.FC<DecorationControlsProps> = ({
                   padding: '4px 6px',
                   fontSize: '11px',
                 }}
-              >↺</button>
+              >
+                ↺
+              </button>
               <button
                 onClick={() => addDeco(d.shape as ShapeType, d.color, 15)}
                 className="btn"
@@ -89,7 +94,9 @@ const DecorationControls: React.FC<DecorationControlsProps> = ({
                   padding: '4px 6px',
                   fontSize: '11px',
                 }}
-              >↻</button>
+              >
+                ↻
+              </button>
               <button
                 // count 引数は省略（useUchiwaState でデフォルト値 5 が使われる）
                 onClick={() => addRandomDecosByShape(d.shape as ShapeType)}
@@ -112,7 +119,9 @@ const DecorationControls: React.FC<DecorationControlsProps> = ({
       </div>
 
       <div className="control-section">
-        <button onClick={clearDecos} className="btn btn-secondary">デコ全削除</button>
+        <button onClick={clearDecos} className="btn btn-secondary">
+          デコ全削除
+        </button>
         {/* addRandomDecos を呼び出すボタンは現在ないので削除 */}
         {/* <button onClick={addRandomDecos} className="btn btn-secondary">ランダム追加 (未使用)</button> */}
       </div>

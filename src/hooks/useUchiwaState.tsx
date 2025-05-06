@@ -1,19 +1,20 @@
 // filepath: /Users/esuji/medi/uchiwa_generator/uchiwa-frontend/src/hooks/useUchiwaState.tsx
-import React, { useState, useRef, useEffect } from 'react';
+import type React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { DecoItem, TextItem, DownloadMethod, OutlineType } from '../types';
-import { fonts, heartSizes, decoShapes } from '../constants';
+import { decoShapes, fonts, heartSizes } from '../constants';
+import type { DecoItem, DownloadMethod, OutlineType, TextItem } from '../types';
 import { downloadWithDomToImage } from '../utils/domToImageUtils';
 
 // URLパラメータをエンコードする関数（マルチバイト文字に対応）
 const encodeState = (state: {
-  textItems: TextItem[],
-  decos: DecoItem[],
-  bgColor: string,
-  fillMode: string
+  textItems: TextItem[];
+  decos: DecoItem[];
+  bgColor: string;
+  fillMode: string;
 }) => {
   const data = {
-    t: state.textItems.map(item => ({
+    t: state.textItems.map((item) => ({
       text: item.text,
       x: Math.round(item.x),
       y: Math.round(item.y),
@@ -21,18 +22,18 @@ const encodeState = (state: {
       s: item.fontSize,
       f: item.font,
       r: item.rotate || 0,
-      o: item.outlineType || 'none' // テキスト縁取りタイプ
+      o: item.outlineType || 'none', // テキスト縁取りタイプ
     })),
-    d: state.decos.map(deco => ({
+    d: state.decos.map((deco) => ({
       x: Math.round(deco.x),
       y: Math.round(deco.y),
       c: deco.color,
       s: deco.size,
       r: deco.rotate || 0,
-      t: deco.shape
+      t: deco.shape,
     })),
     bg: state.bgColor,
-    fm: state.fillMode
+    fm: state.fillMode,
   };
   // マルチバイト文字に対応するためにencodeURIComponentを使用
   return encodeURIComponent(JSON.stringify(data));
@@ -44,7 +45,7 @@ const decodeState = (encoded: string) => {
     // URLパラメータをデコード
     const decodedData = decodeURIComponent(encoded);
     const data = JSON.parse(decodedData);
-    
+
     return {
       textItems: (data.t || []).map((item: any) => ({
         id: uuidv4(),
@@ -55,7 +56,7 @@ const decodeState = (encoded: string) => {
         fontSize: item.s || 40,
         font: item.f || fonts[0].value,
         rotate: item.r || 0,
-        outlineType: item.o || 'none'
+        outlineType: item.o || 'none',
       })),
       decos: (data.d || []).slice(0, 5).map((deco: any) => ({
         id: uuidv4(),
@@ -64,10 +65,10 @@ const decodeState = (encoded: string) => {
         color: deco.c || '#FF69B4',
         size: deco.s || 48,
         rotate: deco.r || 0,
-        shape: deco.t || 'heart'
+        shape: deco.t || 'heart',
       })),
       bgColor: data.bg || '#000000',
-      fillMode: data.fm || 'rounded'
+      fillMode: data.fm || 'rounded',
     };
   } catch (e) {
     console.error('URLパラメータの解析に失敗しました', e);
@@ -91,16 +92,16 @@ export const useUchiwaState = () => {
     }
     return null;
   };
-  
+
   const initialState = getInitialStateFromUrl();
-  
+
   // 複数テキスト用の状態
   const [textItems, setTextItems] = useState<TextItem[]>(() => {
     // URLパラメータからの復元を優先
     if (initialState?.textItems && initialState.textItems.length > 0) {
       return initialState.textItems;
     }
-    
+
     // ローカルストレージから (キーを変更または削除検討)
     const saved = localStorage.getItem('uchiwa_text_items');
     if (saved) {
@@ -111,33 +112,35 @@ export const useUchiwaState = () => {
           return parsedItems.map((item: TextItem) => ({
             ...item,
             rotate: item.rotate !== undefined ? item.rotate : 0,
-            outlineType: item.outlineType || 'none'
+            outlineType: item.outlineType || 'none',
           }));
         }
       } catch {}
     }
     // デフォルトで中央に1つテキスト項目を作成
-    return [{
-      id: uuidv4(),
-      text: 'テキスト', // デフォルトテキスト変更
-      x: 180,
-      y: 180, // 中央寄りに変更
-      color: '#FF69B4',
-      fontSize: 60,
-      font: '"M PLUS Rounded 1c", sans-serif',
-      rotate: 0,
-      outlineType: 'none' // デフォルトは縁取りなし
-    }];
+    return [
+      {
+        id: uuidv4(),
+        text: 'テキスト', // デフォルトテキスト変更
+        x: 180,
+        y: 180, // 中央寄りに変更
+        color: '#FF69B4',
+        fontSize: 60,
+        font: '"M PLUS Rounded 1c", sans-serif',
+        rotate: 0,
+        outlineType: 'none', // デフォルトは縁取りなし
+      },
+    ];
   });
   const [bgColor, setBgColor] = useState(initialState?.bgColor || '#000000');
   const [fillMode, setFillMode] = useState(initialState?.fillMode || 'rounded'); // 'uchiwa', 'rounded', 'all', 'none'
-  
+
   const [decos, setDecos] = useState<DecoItem[]>(() => {
     // URLパラメータからの復元を優先
     if (initialState?.decos) {
       return initialState.decos;
     }
-    
+
     // ローカルストレージから
     const saved = localStorage.getItem('uchiwa_decos');
     if (saved) {
@@ -165,19 +168,20 @@ export const useUchiwaState = () => {
       textItems, // textItems を使用
       decos,
       bgColor,
-      fillMode
+      fillMode,
     };
-    
+
     const encodedState = encodeState(state);
     const url = new URL(window.location.href);
     url.search = `?state=${encodedState}`;
     return url.toString();
   };
-  
+
   // 共有用URLをクリップボードにコピー
   const copyShareableUrl = () => {
     const url = getShareableUrl();
-    navigator.clipboard.writeText(url)
+    navigator.clipboard
+      .writeText(url)
       .then(() => {
         alert('共有用URLをクリップボードにコピーしました！');
       })
@@ -185,14 +189,15 @@ export const useUchiwaState = () => {
         alert('URLのコピーに失敗しました。');
       });
   };
-  
+
   // パラメータのみをクリップボードにコピー
   const copyParametersOnly = () => {
     const url = getShareableUrl();
     const urlObj = new URL(url);
     // パラメータの前に「?」をつけてコピー
     const params = `?${urlObj.searchParams.toString()}`;
-    navigator.clipboard.writeText(params)
+    navigator.clipboard
+      .writeText(params)
       .then(() => {
         alert('?付きパラメータをクリップボードにコピーしました！');
       })
@@ -207,7 +212,10 @@ export const useUchiwaState = () => {
 
     // テキストの内容を結合してファイル名を生成
     console.log('textItems:', textItems);
-    let combinedText = textItems.map(item => item.text.replace(/[\n]/g, '')).join('').trim();
+    let combinedText = textItems
+      .map((item) => item.text.replace(/[\n]/g, ''))
+      .join('')
+      .trim();
     // ファイル名に使用できない文字を除去
     combinedText = combinedText.replace(/[\/\\:*?"<>|]/g, '');
     // 長すぎる場合は短縮
@@ -218,18 +226,18 @@ export const useUchiwaState = () => {
     const fileName = combinedText ? `uchiwa_${combinedText}.png` : 'uchiwa.png';
 
     downloadWithDomToImage(
-      '.preview-svg-container', 
+      '.preview-svg-container',
       fillMode === 'none' ? '#ffffff' : null,
       fileName // 生成したファイル名を使用
     )
-    .then(() => {
-      setIsDownloading(false);
-    })
-    .catch((error) => {
-      console.error('画像生成エラー:', error);
-      alert('画像の生成に失敗しました。別の方法で試してください。');
-      setIsDownloading(false);
-    });
+      .then(() => {
+        setIsDownloading(false);
+      })
+      .catch((error) => {
+        console.error('画像生成エラー:', error);
+        alert('画像の生成に失敗しました。別の方法で試してください。');
+        setIsDownloading(false);
+      });
   };
 
   // handleDownload を簡略化
@@ -249,7 +257,7 @@ export const useUchiwaState = () => {
     // uchiwa_all の保存を削除
     // localStorage.setItem('uchiwa_all', JSON.stringify({ ... }));
   }, []); // 依存配列を空にするか、関連する状態に変更
-  
+
   useEffect(() => {
     localStorage.setItem('uchiwa_text_items', JSON.stringify(textItems));
   }, [textItems]);
@@ -259,13 +267,16 @@ export const useUchiwaState = () => {
   }, [decos]);
 
   // 図形追加 (addDeco) は変更なし
-  const addDeco = (shape: DecoItem['shape'], color: string, rotate: number = 0) => {
+  const addDeco = (shape: DecoItem['shape'], color: string, rotate = 0) => {
     // 5つ以上の図形がある場合は追加しない
     if (decos.length >= 5) {
       alert('図形は最大5つまで追加できます');
       return;
     }
-    setDecos([...decos, { x: 180, y: 200, color, size: selectedHeartSize, id: uuidv4(), rotate, shape }]);
+    setDecos([
+      ...decos,
+      { x: 180, y: 200, color, size: selectedHeartSize, id: uuidv4(), rotate, shape },
+    ]);
   };
 
   // 図形のドラッグ移動 (handleDecoMouseDown, onDecoMouseMove, onDecoMouseUp) は変更なし
@@ -281,7 +292,7 @@ export const useUchiwaState = () => {
 
   const onDecoMouseMove = (e: MouseEvent) => {
     if (dragDecoIndex.current === null) return;
-    setDecos(prev => {
+    setDecos((prev) => {
       const newDecos = [...prev];
       newDecos[dragDecoIndex.current!] = {
         ...newDecos[dragDecoIndex.current!],
@@ -300,50 +311,64 @@ export const useUchiwaState = () => {
 
   // 図形削除
   const removeDeco = (id: string) => {
-    setDecos(decos.filter(d => d.id !== id));
+    setDecos(decos.filter((d) => d.id !== id));
   };
 
   // 図形一括削除
   const clearDecos = () => setDecos([]);
 
   // 図形をランダム配置（5つまでに制限）
-  const addRandomDecos = (count: number = 8) => {
+  const addRandomDecos = (count = 8) => {
     const maxAddableItems = Math.max(0, 5 - decos.length);
     if (maxAddableItems <= 0) {
       alert('図形は最大5つまで追加できます');
       return;
     }
     const actualCount = Math.min(count, maxAddableItems);
-    
-    const minX = 50, maxX = 310, minY = 60, maxY = 320;
+
+    const minX = 50;
+    const maxX = 310;
+    const minY = 60;
+    const maxY = 320;
     const newDecos: DecoItem[] = [];
     for (let i = 0; i < actualCount; i++) {
-      let x = Math.random() * (maxX - minX) + minX;
-      let y = Math.random() * (maxY - minY) + minY;
+      const x = Math.random() * (maxX - minX) + minX;
+      const y = Math.random() * (maxY - minY) + minY;
       // TODO: 必要であれば textItems の領域との衝突判定を追加
       const deco = decoShapes[Math.floor(Math.random() * decoShapes.length)];
       const rotate = [-15, 0, 15][Math.floor(Math.random() * 3)];
       const size = heartSizes[Math.floor(Math.random() * heartSizes.length)].value;
-      newDecos.push({ x, y, color: deco.color, size, id: uuidv4(), rotate, shape: deco.shape as DecoItem['shape'] });
+      newDecos.push({
+        x,
+        y,
+        color: deco.color,
+        size,
+        id: uuidv4(),
+        rotate,
+        shape: deco.shape as DecoItem['shape'],
+      });
     }
     setDecos([...decos, ...newDecos]);
   };
 
   // 図形ごとにランダム配置（5つまでに制限）
-  const addRandomDecosByShape = (shape: DecoItem['shape'], count: number = 8) => {
+  const addRandomDecosByShape = (shape: DecoItem['shape'], count = 8) => {
     const maxAddableItems = Math.max(0, 5 - decos.length);
     if (maxAddableItems <= 0) {
       alert('図形は最大5つまで追加できます');
       return;
     }
     const actualCount = Math.min(count, maxAddableItems);
-    
-    const minX = 50, maxX = 310, minY = 60, maxY = 320;
+
+    const minX = 50;
+    const maxX = 310;
+    const minY = 60;
+    const maxY = 320;
     const newDecos: DecoItem[] = [];
-    const decoColor = decoShapes.find(d => d.shape === shape)?.color || '#FF4081';
+    const decoColor = decoShapes.find((d) => d.shape === shape)?.color || '#FF4081';
     for (let i = 0; i < actualCount; i++) {
-      let x = Math.random() * (maxX - minX) + minX;
-      let y = Math.random() * (maxY - minY) + minY;
+      const x = Math.random() * (maxX - minX) + minX;
+      const y = Math.random() * (maxY - minY) + minY;
       // TODO: 必要であれば textItems の領域との衝突判定を追加
       const rotate = [-15, 0, 15][Math.floor(Math.random() * 3)];
       const size = heartSizes[Math.floor(Math.random() * heartSizes.length)].value;
@@ -356,16 +381,16 @@ export const useUchiwaState = () => {
   const addTextItem = () => {
     // 5つまで追加可能
     if (textItems.length >= 5) return;
-    
+
     // より視覚的に均等な配置にするための調整値
     const centerX = 180;
     const centerY = 180;
     const radius = 70; // 中央からの配置半径
-    
+
     // 位置をテキスト数に応じて最適な配置で計算
     let newX = centerX;
     let newY = centerY;
-    
+
     switch (textItems.length) {
       case 0:
         // 1つ目：中央
@@ -397,13 +422,13 @@ export const useUchiwaState = () => {
         newX = centerX;
         newY = centerY;
     }
-    
+
     // 最後のテキストアイテムから設定を引き継ぐ
     let color = '#FF69B4'; // デフォルト色
     let fontSize = 40; // デフォルトフォントサイズ
     let font = '"M PLUS Rounded 1c", sans-serif'; // デフォルトフォント
     let outlineType: OutlineType = 'none'; // デフォルトの縁取りタイプ
-    
+
     if (textItems.length > 0) {
       // 配列の最後の要素から設定を取得
       const lastItem = textItems[textItems.length - 1];
@@ -412,53 +437,56 @@ export const useUchiwaState = () => {
       font = lastItem.font;
       outlineType = lastItem.outlineType || 'none';
     }
-    
-    setTextItems([...textItems, {
-      id: uuidv4(),
-      text: '',
-      x: newX,
-      y: newY,
-      color, // 最後のアイテムから引き継いだ色
-      fontSize, // 最後のアイテムから引き継いだフォントサイズ
-      font, // 最後のアイテムから引き継いだフォント
-      outlineType, // 最後のアイテムから引き継いだ縁取りタイプ
-      rotate: 0
-    }]);
+
+    setTextItems([
+      ...textItems,
+      {
+        id: uuidv4(),
+        text: '',
+        x: newX,
+        y: newY,
+        color, // 最後のアイテムから引き継いだ色
+        fontSize, // 最後のアイテムから引き継いだフォントサイズ
+        font, // 最後のアイテムから引き継いだフォント
+        outlineType, // 最後のアイテムから引き継いだ縁取りタイプ
+        rotate: 0,
+      },
+    ]);
   };
 
   // テキスト項目を更新する
   const updateTextItem = (id: string, updates: Partial<TextItem>) => {
-    setTextItems(textItems.map(item => 
-      item.id === id ? { ...item, ...updates } : item
-    ));
+    setTextItems(textItems.map((item) => (item.id === id ? { ...item, ...updates } : item)));
   };
 
   // テキスト項目を削除する
   const removeTextItem = (id: string) => {
-    setTextItems(textItems.filter(item => item.id !== id));
+    setTextItems(textItems.filter((item) => item.id !== id));
   };
 
   // テキストアイテムの位置を移動する
   const handleTextDragStart = (id: string) => (e: React.MouseEvent<SVGGElement, MouseEvent>) => {
-    const item = textItems.find(item => item.id === id);
+    const item = textItems.find((item) => item.id === id);
     if (!item) return;
-    
+
     const dragOffset = {
       x: e.clientX - item.x,
-      y: e.clientY - item.y
+      y: e.clientY - item.y,
     };
 
     const onMouseMove = (moveEvent: MouseEvent) => {
-      setTextItems(prev => prev.map(textItem => 
-        textItem.id === id 
-          ? { 
-              ...textItem, 
-              x: moveEvent.clientX - dragOffset.x,
-              y: moveEvent.clientY - dragOffset.y,
-              rotate: textItem.rotate || 0 // rotateプロパティがなければ0を設定
-            } 
-          : textItem
-      ));
+      setTextItems((prev) =>
+        prev.map((textItem) =>
+          textItem.id === id
+            ? {
+                ...textItem,
+                x: moveEvent.clientX - dragOffset.x,
+                y: moveEvent.clientY - dragOffset.y,
+                rotate: textItem.rotate || 0, // rotateプロパティがなければ0を設定
+              }
+            : textItem
+        )
+      );
     };
 
     const onMouseUp = () => {
@@ -472,33 +500,37 @@ export const useUchiwaState = () => {
 
   // リセット機能 (resetAllSettings) を修正
   const resetAllSettings = () => {
-    if (window.confirm('すべての設定をリセットし、トップページに戻りますか？変更内容は失われます。')) {
+    if (
+      window.confirm('すべての設定をリセットし、トップページに戻りますか？変更内容は失われます。')
+    ) {
       // 単一テキスト関連のデフォルト値設定を削除
       // setTextColor('#FF69B4');
       // setFont('"M PLUS Rounded 1c", sans-serif');
       // setFontSize(60);
-      
+
       // bgColor と fillMode はリセット
       setBgColor('#000000');
       setFillMode('rounded');
-      
+
       // デフォルトのテキストアイテムを1つ設定 (初期化ロジックと合わせる)
-      setTextItems([{
-        id: uuidv4(),
-        text: 'テキスト',
-        x: 180,
-        y: 180,
-        color: '#FF69B4',
-        fontSize: 60,
-        font: '"M PLUS Rounded 1c", sans-serif',
-        rotate: 0,
-        outlineType: 'none' // デフォルトは縁取りなし
-      }]);
-      
+      setTextItems([
+        {
+          id: uuidv4(),
+          text: 'テキスト',
+          x: 180,
+          y: 180,
+          color: '#FF69B4',
+          fontSize: 60,
+          font: '"M PLUS Rounded 1c", sans-serif',
+          rotate: 0,
+          outlineType: 'none', // デフォルトは縁取りなし
+        },
+      ]);
+
       // 図形をクリア
       setDecos([]);
       // setHearts([]); // hearts は削除済み
-      
+
       // URLをトップに戻す
       window.history.replaceState({}, document.title, window.location.pathname);
     }
@@ -506,17 +538,24 @@ export const useUchiwaState = () => {
 
   return {
     // 維持する状態と関数
-    bgColor, setBgColor,
-    fillMode, setFillMode,
-    textItems, setTextItems,
+    bgColor,
+    setBgColor,
+    fillMode,
+    setFillMode,
+    textItems,
+    setTextItems,
     addTextItem,
     updateTextItem,
     removeTextItem,
     handleTextDragStart,
-    decos, setDecos,
-    selectedHeartSize, setSelectedHeartSize,
-    isDownloading, setIsDownloading,
-    downloadMethod, setDownloadMethod, // downloadMethod は維持 (UIで選択肢が残る場合)
+    decos,
+    setDecos,
+    selectedHeartSize,
+    setSelectedHeartSize,
+    isDownloading,
+    setIsDownloading,
+    downloadMethod,
+    setDownloadMethod, // downloadMethod は維持 (UIで選択肢が残る場合)
     svgRef,
     handleDownload, // handleDownload は簡略化されたもの
     addDeco,
@@ -528,6 +567,6 @@ export const useUchiwaState = () => {
     getShareableUrl,
     copyShareableUrl,
     copyParametersOnly,
-    resetAllSettings
+    resetAllSettings,
   };
 };

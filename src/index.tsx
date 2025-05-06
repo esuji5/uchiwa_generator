@@ -21,52 +21,52 @@ const preloadFont = async () => {
         white-space: nowrap;
       `;
       document.body.appendChild(testText);
-      
+
       // フォントの可用性を確認
       const checkFont = (fontName: string) => {
         testText.style.fontFamily = `'${fontName}', sans-serif`;
         testText.textContent = 'あいうえお漢字サンプルABCDEF123456';
         const defaultWidth = testText.offsetWidth;
-        
+
         // 実際にフォントが適用されているか確認（幅で判断）
         testText.style.fontFamily = `'${fontName}', serif`;
         const testWidth = testText.offsetWidth;
-        
+
         return defaultWidth !== testWidth;
       };
-      
+
       const results = {
         mPlusRounded: checkFont('M PLUS Rounded 1c'),
         hiragino: checkFont('ヒラギノ丸ゴ Pro'),
-        hiraginoEn: checkFont('Hiragino Maru Gothic Pro')
+        hiraginoEn: checkFont('Hiragino Maru Gothic Pro'),
       };
-      
+
       document.body.removeChild(testText);
       return results;
     };
-    
+
     if (document.fonts) {
       // 両方のフォントとそれぞれの日英表記を読み込み試行
       const fontPromises = [
         // M PLUS フォント
         document.fonts.load('400 16px "M PLUS Rounded 1c"'),
         document.fonts.load('700 16px "M PLUS Rounded 1c"'),
-        
+
         // ヒラギノ丸ゴシック（日英表記両方）
         document.fonts.load('400 16px "ヒラギノ丸ゴ Pro W4"'),
         document.fonts.load('700 16px "ヒラギノ丸ゴ Pro W4"'),
         document.fonts.load('400 16px "Hiragino Maru Gothic Pro"'),
-        document.fonts.load('700 16px "Hiragino Maru Gothic Pro"')
+        document.fonts.load('700 16px "Hiragino Maru Gothic Pro"'),
       ];
-      
+
       try {
         await Promise.allSettled(fontPromises);
         console.log('フォント読み込み試行完了');
-        
+
         // フォントが実際に使用可能か確認
         const fontAvailability = checkFontAvailability();
         console.log('フォント可用性確認結果:', fontAvailability);
-        
+
         document.fonts.ready.then(() => {
           console.log('全てのフォントが準備完了しました');
         });
@@ -77,15 +77,15 @@ const preloadFont = async () => {
       // document.fontsがない場合の代替手段
       // フォント読み込み用のテキストを一時的に追加
       const tempElements: HTMLDivElement[] = [];
-      
+
       const fontFamilies = [
         '"M PLUS Rounded 1c", sans-serif',
         '"ヒラギノ丸ゴ Pro W4", sans-serif',
-        '"Hiragino Maru Gothic Pro", sans-serif'
+        '"Hiragino Maru Gothic Pro", sans-serif',
       ];
-      
+
       // 各フォント用の非表示要素を作成
-      fontFamilies.forEach(fontFamily => {
+      fontFamilies.forEach((fontFamily) => {
         const tempEl = document.createElement('div');
         tempEl.style.fontFamily = fontFamily;
         tempEl.style.visibility = 'hidden';
@@ -96,10 +96,10 @@ const preloadFont = async () => {
         document.body.appendChild(tempEl);
         tempElements.push(tempEl);
       });
-      
+
       // 少し待機してからクリーンアップ
       setTimeout(() => {
-        tempElements.forEach(el => document.body.removeChild(el));
+        tempElements.forEach((el) => document.body.removeChild(el));
       }, 2000);
     }
   } catch (err) {
@@ -125,9 +125,7 @@ const createFontPreloader = () => {
 // ページ読み込み時にフォントプリローダーを作成
 createFontPreloader();
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <React.StrictMode>
     <App />

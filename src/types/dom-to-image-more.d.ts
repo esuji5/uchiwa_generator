@@ -14,8 +14,14 @@ declare module 'dom-to-image-more' {
   export function toPng(node: HTMLElement, options?: DomToImageOptions): Promise<string>;
   export function toJpeg(node: HTMLElement, options?: DomToImageOptions): Promise<string>;
   export function toBlob(node: HTMLElement, options?: DomToImageOptions): Promise<Blob>;
-  export function toPixelData(node: HTMLElement, options?: DomToImageOptions): Promise<Uint8ClampedArray>;
-  export function toCanvas(node: HTMLElement, options?: DomToImageOptions): Promise<HTMLCanvasElement>;
+  export function toPixelData(
+    node: HTMLElement,
+    options?: DomToImageOptions
+  ): Promise<Uint8ClampedArray>;
+  export function toCanvas(
+    node: HTMLElement,
+    options?: DomToImageOptions
+  ): Promise<HTMLCanvasElement>;
 
   export default {
     toSvg,
@@ -23,6 +29,6 @@ declare module 'dom-to-image-more' {
     toJpeg,
     toBlob,
     toPixelData,
-    toCanvas
+    toCanvas,
   };
 }
