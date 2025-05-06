@@ -15,8 +15,8 @@ export const heartSizes = [
   { label: '小', value: 32 },
   { label: '中', value: 48 },
   { label: '大', value: 80 },
-  { label: '特大', value: 120 },
-  { label: '超特大', value: 160 },
+  { label: '特', value: 120 },
+  { label: '極', value: 160 },
 ];
 
 export const decoShapes = [
